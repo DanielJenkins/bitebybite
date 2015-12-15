@@ -9,33 +9,123 @@ p {
   width: 100%;
   border: 1px solid #100B09;
 }
-.lightblue {
+.lightblueBackground {
   background-color: #0076E9;
 }
-.mediumblue {
+.mediumblueBackground {
   background-color: #00264A;
 }
-.bluegrey {
+.bluegreyBackground {
   background-color: #45586B;
 }
-.darkblue {
+.darkblueBackground {
   background-color: #031C34;
 }
-.blueblack {
+.blueblackBackground {
   background-color: #100B09;
 }
-.green {
+.greenBackground {
   background-color: #003919;
 }
-.redgrey {
+.redgreyBackground {
   background-color: #A47265;
 }
-.brightred {
+.brightredBackground {
   background-color: #721800;
 }
-.darkred {
+.darkredBackground {
   background-color: #501100;
 }
-.redblack {
+.redblackBackground {
   background-color: #100B09;
+}
+.lightblue {
+  color: #0076E9;
+}
+.mediumblue {
+  color: #00264A;
+}
+.bluegrey {
+  color: #45586B;
+}
+.darkblue {
+  color: #031C34;
+}
+.blueblack {
+  color: #100B09;
+}
+.green {
+  color: #003919;
+}
+.redgrey {
+  color: #A47265;
+}
+.brightred {
+  color: #721800;
+}
+.darkred {
+  color: #501100;
+}
+.redblack {
+  color: #100B09;
+}
+/*-----------------------------------------------------------*/
+/*Header*/
+.headerLg {
+  height: 350px;
+  background: #100B09;
+}
+.headerLg:after {
+  content: " ";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  max-width: 1920px;
+  height: 350px;
+  z-index: 1;
+  background-size: 100%;
+  background-image: url("../images/seafood.jpg");
+  background-position: center;
+  opacity: 0.4;
+}
+.headerXs {
+  background: #100B09;
+}
+.headerXs:after {
+  content: " ";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-size: 100%;
+  background-image: url("../images/seafood.jpg");
+  background-position: center;
+  opacity: 0.4;
+}
+.headerContent {
+  z-index: 3;
+  margin-bottom: 50px;
+}
+.titleLg {
+  font-size: 64px;
+  text-shadow: 2px 2px 6px #100B09;
+}
+.titleXs {
+  font-size: 48px;
+  text-shadow: 2px 2px 6px #100B09;
+}
+.spacerLg {
+  height: 100px;
+}
+.spacerXs {
+  height: 50px;
+}
+.subtitleLg {
+  text-shadow: 1px 1px 3px #100B09;
+}
+.subtitleXs {
+  text-shadow: 1px 1px 3px #100B09;
 }
