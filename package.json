@@ -1,0 +1,23 @@
+{
+  "name": "bitebybite",
+  "version": "1.0.0",
+  "description": "JSON package for bitebybite",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.13.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanielJenkins/bitebybite.git"
+  },
+  "author": "Daniel Jenkins <DanielPatrickJenkins@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DanielJenkins/bitebybite/issues"
+  },
+  "homepage": "https://github.com/DanielJenkins/bitebybite#readme"
+}

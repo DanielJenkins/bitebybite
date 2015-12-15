@@ -1,0 +1,41 @@
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Lato', 'Arimo', sans-serif;
+}
+p {
+  font-family: 'Roboto Slab', 'Bitter', serif;
+}
+.colors {
+  height: 100px;
+  width: 100%;
+  border: 1px solid #100B09;
+}
+.lightblue {
+  background-color: #0076E9;
+}
+.mediumblue {
+  background-color: #00264A;
+}
+.bluegrey {
+  background-color: #45586B;
+}
+.darkblue {
+  background-color: #031C34;
+}
+.blueblack {
+  background-color: #100B09;
+}
+.green {
+  background-color: #003919;
+}
+.redgrey {
+  background-color: #A47265;
+}
+.brightred {
+  background-color: #721800;
+}
+.darkred {
+  background-color: #501100;
+}
+.redblack {
+  background-color: #100B09;
+}
