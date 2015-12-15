@@ -32,19 +32,53 @@
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-xs-12 col-sm-6 col-md-offset-2 col-md-4 text-center">
-        <p>origin</p>
+    <div class="row spacerXs"></div>
+    <form>
+      <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-offset-2 col-md-4 col-lg-offset-3 col-lg-3 form-group">
+          <label for="origin" class="brightred">Origin:</label>
+          <input type="text" id="origin" placeholder="Los Angeles, CA" class="form-control text-center"/>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 form-group">
+          <label for="destination" class="brightred">Destination:</label>
+          <input type="text" id="destination" placeholder="San Diego, CA" class="form-control text-center"/>
+        </div>
       </div>
-      <div class="col-xs-12 col-sm-6 col-md-offset-2 col-md-4 text-center">
-        <p>destination</p>
+      <div class="row">
+        <div class="col-xs-12 col-sm-offset-2 col-sm-8 col-md-offset-4 col-md-4 form-group">
+          <label for="destination" class="brightred">Find:</label>
+          <input type="text" id="destination" placeholder="tacos, cheap dinner, Joe's" class="form-control text-center"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 text-center">
+          <button type="submit" class="btn btn-default">Search Along Your Route</button>
+        </div>
+      </div>
+      <div class="row spacerXs"></div>
+    </form>
+    <div class="row darkblueBackground">
+      <div class="col-xs-12 col-sm-4 col-md-4"><img src="images/sushi.jpg" class="tileImage"/></div>
+      <div class="col-xs-6 col-sm-4 col-md-4"><img src="images/tacos.jpg" class="tileImage"/></div>
+      <div class="col-xs-6 col-sm-4 col-md-4"><img src="images/burger.jpg" class="tileImage"/></div>
+      <div class="hidden-xs col-sm-4 col-md-4"><img src="images/pizza.jpg" class="tileImage"/></div>
+      <div class="hidden-xs col-sm-4 col-md-4"><img src="images/curry.jpg" class="tileImage"/></div>
+      <div class="hidden-xs col-sm-4 col-md-4"><img src="images/eggrolls.jpg" class="tileImage"/></div>
+      <div class="col-xs-12">
+        <div class="tileImage"></div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-xs-12 text-center">
-        <p>food type</p>
+    <div class="row darkredBackground spacerXs"></div>
+    <div class="row darkredBackground">
+      <div class="col-xs-12 text-center redgrey subtitle">
+        <h3>Powered By</h3>
       </div>
     </div>
+    <div class="row darkredBackground">
+      <div class="col-xs-12 col-sm-6 text-center"><a href="http://yelp.com/" target="_"><img src="images/yelp.svg" class="logo"/></a></div>
+      <div class="col-xs-12 col-sm-6 text-center"><a href="maps.google.com" target="_"><img src="images/google.png" class="logo"/></a></div>
+    </div>
+    <div class="row darkredBackground spacerXs"></div>
   </div>
   <script src="js/default.js"></script>
 </body>
