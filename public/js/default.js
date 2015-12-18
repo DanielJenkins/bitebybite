@@ -2,6 +2,7 @@ var originElement = document.getElementById('origin');
 var destinationElement = document.getElementById('destination');
 var originAutocomplete;
 var destinationAutocomplete;
+var yelpResults;
 
 
 function init() {
@@ -55,8 +56,8 @@ function runSearch(e) {
 
   xhr.onload = function() {
     if (xhr.status == 200) {
-      responseBody = xhr.responseText;
-      //responseBody = JSON.parse(xhr.responseText);
+      console.log('Search Results Returned');
+      responseBody = JSON.parse(xhr.responseText);
     }
     else {
       console.log('error: ' + err);

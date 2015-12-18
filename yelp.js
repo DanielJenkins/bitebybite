@@ -38,8 +38,10 @@ yelpRouter.post('/search', function(req,res){
             allResults.push(currentBusinesses[d]);
           };
         };
-
-        console.log('1. allResults in and ready to proceed if there is a value here: ' + allResults[0].name);
+        console.log('Exporting yelp search results');
+        console.log('first name exported: ' + allResults[0].name);
+        JSON.stringify(allResults);
+        res.send(allResults);
       }
     })
     .catch(function (err) {
@@ -51,14 +53,6 @@ yelpRouter.post('/search', function(req,res){
     var latLng = responseBody[i].lat + ", " + responseBody[i].lng;
     mySearch(i);
   };
-
-  for (var f = 0; f < allResults.length; f++) {
-      console.log('2. allResults: ' + allResults[f].name);
-    };
-
-  console.log('3. exporting');
-  JSON.stringify(allResults);
-  res.send('allResults');
 });
 
 module.exports = yelpRouter;
