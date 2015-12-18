@@ -19,35 +19,46 @@ var client = yelp.createClient({
 yelpRouter.post('/search', function(req,res){
   responseBody = JSON.parse(req.body);
 
+  var responses = 0;
+  var businesses = [];
+  var searchResults = [];
   var allResults = [];
-  for (var i = 0; i < responseBody.length; i++) {
-    console.log(i + 'th iteration');
-    
-    var businesses = [];
-    var latLng = responseBody[i].lat + ", " + responseBody[i].lng;
 
-    client.search({term: responseBody[i].searchTerm,ll: latLng})
+  function mySearch(m) {
+    client.search({term: responseBody[m].searchTerm,ll: latLng})
     .then(function (data) {
-      console.log('DATA FROM YELP FOR ' + i);
       businesses = data.businesses;
-      for (var j = 0; j < businesses.length; j++) {
-        console.log('business: ' + businesses[j].name);
-      };
+      searchResults[m] = businesses;
+
+      responses++;
+      if(responses===responseBody.length) {
+        for (var k = 0; k < searchResults.length; k++) {
+          var currentBusinesses = searchResults[k];
+          for (var d = 0; d < currentBusinesses.length; d++) {
+            allResults.push(currentBusinesses[d]);
+          };
+        };
+
+        // for (var f = 0; f < allResults.length; f++) {
+        //   console.log(allResults[f].name);
+        // };
+
+        JSON.stringify(allResults);
+        res.send('hello');
+      }
     })
     .catch(function (err) {
       console.log('yelp error: ' + err);
     });
 
-    /* Add this back in once the previous part is working
-    for (var j = 0; j < businesses.length; j++) {
-      allResults.push(businesses[j]);
-      console.log('Results: ' + i + ": " + businesses[j].name);
-    };
-    */
-  };
+  }
 
-  JSON.stringify(allResults);
-  res.send('hello');
+
+  for (var i = 0; i < responseBody.length; i++) {
+    var latLng = responseBody[i].lat + ", " + responseBody[i].lng;
+    mySearch(i);
+    
+  };
 });
 
 module.exports = yelpRouter;
