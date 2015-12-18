@@ -4,7 +4,8 @@
   "description": "JSON package for bitebybite",
   "main": "app.js",
   "dependencies": {
-    "express": "^4.13.3"
+    "express": "^4.13.3",
+    "node-yelp": "0.0.3"
   },
   "devDependencies": {},
   "scripts": {

@@ -10,7 +10,7 @@ function init() {
 }
 google.maps.event.addDomListener(window, 'load', init);
 
-var categoryElement = document.getElementById('category');
+var searchTermEl = document.getElementById('category');
 
 var search = document.getElementById('search');
 search.addEventListener('click',runSearch,false);
@@ -31,6 +31,7 @@ var searchPlaces = [];
 function runSearch(e) {
   e.preventDefault();
   //Get origin and destination lat&lng
+  var searchTerm = JSON.stringify(searchTermEl.value);
   origin = originAutocomplete.getPlace();
   originLat = origin.geometry.location.lat();
   originLng = origin.geometry.location.lng();
@@ -45,9 +46,23 @@ function runSearch(e) {
   searchPlaces[0] = originLatLng;
   for (var i = 0; i <= numSearches; i++) {
     LatLngObj = google.maps.geometry.spherical.interpolate(originLatLng, destinationLatLng, (i/numSearches));
-    searchPlaces[i] = {lat: LatLngObj.lat(), lng: LatLngObj.lng()}
-    console.log(searchPlaces[i]);
+    searchPlaces[i] = {searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng()};
   };
+  var jsonSearchPlaces = JSON.stringify(searchPlaces);
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST','/yelp/search',true);
+  xhr.send(jsonSearchPlaces);
+
+  xhr.onload = function() {
+    if (xhr.status == 200) {
+      responseBody = xhr.responseText;
+      //responseBody = JSON.parse(xhr.responseText);
+    }
+    else {
+      console.log('error: ' + err);
+    }
+  }
+
 }
 
 
