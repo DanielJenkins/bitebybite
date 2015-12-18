@@ -39,26 +39,26 @@ yelpRouter.post('/search', function(req,res){
           };
         };
 
-        // for (var f = 0; f < allResults.length; f++) {
-        //   console.log(allResults[f].name);
-        // };
-
-        JSON.stringify(allResults);
-        res.send('hello');
+        console.log('1. allResults in and ready to proceed if there is a value here: ' + allResults[0].name);
       }
     })
     .catch(function (err) {
       console.log('yelp error: ' + err);
     });
-
   }
-
 
   for (var i = 0; i < responseBody.length; i++) {
     var latLng = responseBody[i].lat + ", " + responseBody[i].lng;
     mySearch(i);
-    
   };
+
+  for (var f = 0; f < allResults.length; f++) {
+      console.log('2. allResults: ' + allResults[f].name);
+    };
+
+  console.log('3. exporting');
+  JSON.stringify(allResults);
+  res.send('allResults');
 });
 
 module.exports = yelpRouter;
