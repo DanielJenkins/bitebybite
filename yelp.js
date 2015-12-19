@@ -24,13 +24,16 @@ yelpRouter.post('/search', function(req,res){
   var searchResults = [];
   var allResults = [];
 
+  //Requests search results from yelp
   function mySearch(m) {
     client.search({term: responseBody[m].searchTerm,ll: latLng})
     .then(function (data) {
       businesses = data.businesses;
       searchResults[m] = businesses;
+      console.log('Yelp results returned for ' + m + 'th search at ' + latLng);
 
       responses++;
+      //Runs once all search results have been received from yelp
       if(responses===responseBody.length) {
         for (var k = 0; k < searchResults.length; k++) {
           var currentBusinesses = searchResults[k];
@@ -38,10 +41,15 @@ yelpRouter.post('/search', function(req,res){
             allResults.push(currentBusinesses[d]);
           };
         };
-        console.log('Exporting yelp search results');
-        console.log('first name exported: ' + allResults[0].name);
-        JSON.stringify(allResults);
-        res.send(allResults);
+
+        //Removes Duplicated Search Results
+        uniqueResults = allResults.filter(function(elem, pos) {
+          return allResults.indexOf(elem) == pos;
+        })
+
+        console.log('Exporting yelp search results to default.js');
+        JSON.stringify(uniqueResults);
+        res.send(uniqueResults);
       }
     })
     .catch(function (err) {
@@ -49,6 +57,7 @@ yelpRouter.post('/search', function(req,res){
     });
   }
 
+  //Loops through all search latLng
   for (var i = 0; i < responseBody.length; i++) {
     var latLng = responseBody[i].lat + ", " + responseBody[i].lng;
     mySearch(i);
