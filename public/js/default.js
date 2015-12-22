@@ -16,8 +16,7 @@ var destinationLng;
 var destinationLatLng;
 var searchPlaces = [];
 var nameEl = []
-var addressElLine1 = [];
-var addressElLine2 = [];
+var addressEl = [];
 
 search.addEventListener('click',searchRequested,false);
 google.maps.event.addDomListener(window, 'load', init);
@@ -77,15 +76,16 @@ function loadMap(searchResults,origin,destination) {
     holderEl.appendChild(nameEl[i]);
     holderEl.appendChild(new AddRating(searchResults[i]));
     var displayAddress = searchResults[i].location.display_address;
-    var addressLine1Text = document.createTextNode(displayAddress[0]);
-    var addressLine2Text = document.createTextNode(displayAddress[1]);
-    addressElLine1[i] = document.createElement('p');
-    addressElLine1[i].appendChild(addressLine1Text);
-    addressElLine2[i] = document.createElement('p');
-    addressElLine2[i].appendChild(addressLine2Text);
-    ////MORE LINES OF TEXT
-    holderEl.appendChild(addressElLine1[i]);
-    holderEl.appendChild(addressElLine2[i]);
+    addressEl[i] = document.createElement('p');
+    for (var k = 0; k < displayAddress.length; k++) {
+      if (k !== 0) {
+        var br = document.createElement('br');
+        addressEl[i].appendChild(br);
+      };
+      var newline = document.createTextNode(displayAddress[k]);
+      addressEl[i].appendChild(newline);
+    };
+    holderEl.appendChild(addressEl[i]);
   };
 }
 
