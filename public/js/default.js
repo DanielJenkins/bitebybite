@@ -16,6 +16,8 @@ var destinationLng;
 var destinationLatLng;
 var searchPlaces = [];
 var nameEl = []
+var addressElLine1 = [];
+var addressElLine2 = [];
 
 search.addEventListener('click',searchRequested,false);
 google.maps.event.addDomListener(window, 'load', init);
@@ -56,7 +58,7 @@ function runSearch() {
       console.log('First yelp result name: ' + yelpResults[0].name);
 
       loadMap(yelpResults,origin,destination);
-      changeView('resultsScreen');
+      changeView('resultsScreen',null);
     }
     else {
       console.log('error: ' + err);
@@ -65,18 +67,84 @@ function runSearch() {
 }
 
 function loadMap(searchResults,origin,destination) {
+  holderEl = document.createElement('div');
+  searchResultsEl.appendChild(holderEl);
   for (var i = 0; i < searchResults.length; i++) {
-    console.log('text: ' + searchResults[i].name);
+    nameEl[i] = document.createElement('a');
     var nameText = document.createTextNode(searchResults[i].name);
-    nameEl[i] = document.createElement('p');
-    console.log(nameEl[i]);
     nameEl[i].appendChild(nameText);
-    searchResultsEl.appendChild(nameEl[i]);
+    nameEl[i].addEventListener('click',changeView('expandedOption',searchResults[i]),false);
+    holderEl.appendChild(nameEl[i]);
+    holderEl.appendChild(new AddRating(searchResults[i]));
+    var displayAddress = searchResults[i].location.display_address;
+    var addressLine1Text = document.createTextNode(displayAddress[0]);
+    var addressLine2Text = document.createTextNode(displayAddress[1]);
+    addressElLine1[i] = document.createElement('p');
+    addressElLine1[i].appendChild(addressLine1Text);
+    addressElLine2[i] = document.createElement('p');
+    addressElLine2[i].appendChild(addressLine2Text);
+    ////MORE LINES OF TEXT
+    holderEl.appendChild(addressElLine1[i]);
+    holderEl.appendChild(addressElLine2[i]);
   };
 }
 
+function AddRating(business) {
+  ratingsEl = document.createElement('div');
+  var rating;
+  if(business.rating == 1) {
+    rating = '1';
+  }
+  else if (business.rating == 1.5) {
+    rating = '1-half';
+  }
+  else if (business.rating == 2) {
+    rating = '2';
+  }
+  else if (business.rating == 2.5) {
+    rating = '2-half';
+  }
+  else if (business.rating == 3) {
+    rating = '3';
+  }
+  else if (business.rating == 3.5) {
+    rating = '3-half';
+  }
+  else if (business.rating == 4) {
+    rating = '4';
+  }
+  else if (business.rating == 4.5) {
+    rating = '4-half';
+  }
+  else if (business.rating == 5) {
+    rating = '5';
+  }
+  ratingsEl.className = 'rating rating-' + rating;
+  star1 = document.createElement('i');
+  star2 = document.createElement('i');
+  star3 = document.createElement('i');
+  star4 = document.createElement('i');
+  star5 = document.createElement('i');
+  star1.appendChild(document.createTextNode('★'));
+  star2.appendChild(document.createTextNode('★'));
+  star3.appendChild(document.createTextNode('★'));
+  star4.appendChild(document.createTextNode('★'));
+  star5.appendChild(document.createTextNode('★'));
+  star1.className = 'star-1';
+  star2.className = 'star-2';
+  star3.className = 'star-3';
+  star4.className = 'star-4';
+  star5.className = 'star-5';
+  ratingsEl.appendChild(star1);
+  ratingsEl.appendChild(star2);
+  ratingsEl.appendChild(star3);
+  ratingsEl.appendChild(star4);
+  ratingsEl.appendChild(star5);
+  return ratingsEl;
+}
+
 ////Change visibility of parts of the page
-function changeView(view) {
+function changeView(view,business) {
   console.log('Changing page view to ' + view);
   if (view === 'loadScreen') {
   }
@@ -88,6 +156,6 @@ function changeView(view) {
 
 function searchRequested(e) {
   e.preventDefault();
-  changeView('loadScreen');
+  changeView('loadScreen',null);
   runSearch();
 }
