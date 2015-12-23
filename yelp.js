@@ -23,6 +23,9 @@ yelpRouter.post('/search', function(req,res){
   var businesses = [];
   var searchResults = [];
   var allResults = [];
+  var uniqueResults = [];
+  var allUrls = [];
+  var uniqueUrls = [];
 
   //Requests search results from yelp
   function mySearch(m) {
@@ -30,7 +33,7 @@ yelpRouter.post('/search', function(req,res){
     .then(function (data) {
       businesses = data.businesses;
       searchResults[m] = businesses;
-      console.log('Yelp results returned for ' + m + 'th search at ' + latLng);
+      console.log('Yelp results returned for ' + m + 'th search');
 
       responses++;
       //Runs once all search results have been received from yelp
@@ -39,15 +42,20 @@ yelpRouter.post('/search', function(req,res){
           var currentBusinesses = searchResults[k];
           for (var d = 0; d < currentBusinesses.length; d++) {
             allResults.push(currentBusinesses[d]);
+            allUrls.push(currentBusinesses[d].url);
           };
         };
-
         //Removes Duplicated Search Results
-        console.log('Results with duplicates: ' + allResults.length);
-        uniqueResults = allResults.filter(function(elem, pos) {
-          return allResults.indexOf(elem) == pos;
-        })
-        console.log('Results with duplicates removed: ' + uniqueResults.length);
+        uniqueUrls = allUrls.filter(function(elem, pos) {
+          return allUrls.indexOf(elem) == pos;
+        });
+        for (var q = 0; q < uniqueUrls.length; q++) {
+          for (var w = 0; w < allResults.length; w++) {
+            if (uniqueUrls[q] == allResults[w].url) {
+              uniqueResults[q] = allResults[w];
+            };
+          };
+        };
         console.log('Exporting yelp search results to default.js');
         JSON.stringify(uniqueResults);
         res.send(uniqueResults);

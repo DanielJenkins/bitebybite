@@ -54,7 +54,7 @@ function runSearch() {
     if (xhr.status == 200) {
       console.log('Search results received by default.js');
       yelpResults = JSON.parse(xhr.responseText);
-      console.log('First yelp result name: ' + yelpResults[0].name);
+      //console.log('First yelp result name: ' + yelpResults[0].name);
 
       loadMap(yelpResults,origin,destination);
       changeView('resultsScreen',null);
