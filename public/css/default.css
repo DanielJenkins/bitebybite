@@ -1,4 +1,4 @@
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, a {
   font-family: 'Lato', 'Arimo', sans-serif;
 }
 p {
@@ -137,9 +137,35 @@ p {
 .subtitleXs {
   text-shadow: 2px 2px 3px #100B09;
 }
-/*Business Listings*/
+/*------------------------Search Results------------------------*/
+.resultName {
+  font-weight: bold;
+  font-size: 18px;
+}
+.reviewText {
+  margin: 0px;
+  font-size: 16px;
+  display: inline;
+  font-family: 'Roboto Slab', 'Bitter', serif;
+}
+.searchResult {
+  background-color: #0076E9;
+  border: 2px solid #45586B;
+  border-radius: 4px;
+}
+.searchResultRight {
+  min-height: 74px;
+}
+.addressText {
+  font-size: 16px;
+  margin-left: 15px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  font-family: 'Roboto Slab', 'Bitter', serif;
+}
+/*Ratings*/
 .rating {
-  margin: 10px 0;
+  margin-top: 6px;
 }
 .rating i {
   display: inline-block;;

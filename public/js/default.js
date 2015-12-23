@@ -66,17 +66,34 @@ function runSearch() {
 }
 
 function loadMap(searchResults,origin,destination) {
-  holderEl = document.createElement('div');
+  var holderEl = document.createElement('div');
   searchResultsEl.appendChild(holderEl);
   for (var i = 0; i < searchResults.length; i++) {
+    var searchResultRow = document.createElement('div');
+    searchResultRow.className = 'row';
+    holderEl.appendChild(searchResultRow);
+    var searchResultContent = document.createElement('div');
+    searchResultContent.className = 'col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 searchResult';
+    searchResultRow.appendChild(searchResultContent);
+    var searchResultContentRow = document.createElement('div');
+    searchResultContent.appendChild(searchResultContentRow);
+    searchResultContentRow.className = 'row';
+    var searchResultLeft = document.createElement('div');
+    var searchResultRight = document.createElement('div');
+    searchResultLeft.className = 'col-xs-offset-1 col-xs-11 col-sm-offset-0 col-sm-7 col-md-7';
+    searchResultRight.className = 'col-xs-offset-1 col-xs-11 col-sm-offset-0 col-sm-5 col-md-5 searchResultRight';
+    searchResultContentRow.appendChild(searchResultLeft);
+    searchResultContentRow.appendChild(searchResultRight);
     nameEl[i] = document.createElement('a');
+    nameEl[i].className = 'brightred resultName';
     var nameText = document.createTextNode(searchResults[i].name);
     nameEl[i].appendChild(nameText);
-    nameEl[i].addEventListener('click',changeView('expandedOption',searchResults[i]),false);
-    holderEl.appendChild(nameEl[i]);
-    holderEl.appendChild(new AddRating(searchResults[i]));
+    nameEl[i].addEventListener('click',function() {changeView('expandedOption',searchResults[i])},false);
+    searchResultLeft.appendChild(nameEl[i]);
+    searchResultLeft.appendChild(new AddRating(searchResults[i]));
     var displayAddress = searchResults[i].location.display_address;
     addressEl[i] = document.createElement('p');
+    addressEl[i].className = 'addressText';
     for (var k = 0; k < displayAddress.length; k++) {
       if (k !== 0) {
         var br = document.createElement('br');
@@ -85,7 +102,7 @@ function loadMap(searchResults,origin,destination) {
       var newline = document.createTextNode(displayAddress[k]);
       addressEl[i].appendChild(newline);
     };
-    holderEl.appendChild(addressEl[i]);
+    searchResultRight.appendChild(addressEl[i]);
   };
 }
 
@@ -120,11 +137,11 @@ function AddRating(business) {
     rating = '5';
   }
   ratingsEl.className = 'rating rating-' + rating;
-  star1 = document.createElement('i');
-  star2 = document.createElement('i');
-  star3 = document.createElement('i');
-  star4 = document.createElement('i');
-  star5 = document.createElement('i');
+  var star1 = document.createElement('i');
+  var star2 = document.createElement('i');
+  var star3 = document.createElement('i');
+  var star4 = document.createElement('i');
+  var star5 = document.createElement('i');
   star1.appendChild(document.createTextNode('★'));
   star2.appendChild(document.createTextNode('★'));
   star3.appendChild(document.createTextNode('★'));
@@ -140,6 +157,10 @@ function AddRating(business) {
   ratingsEl.appendChild(star3);
   ratingsEl.appendChild(star4);
   ratingsEl.appendChild(star5);
+  var reviewCount = document.createElement('p');
+  reviewCount.appendChild(document.createTextNode(' ' + business.review_count + ' reviews'));
+  reviewCount.className = 'reviewText';
+  ratingsEl.appendChild(reviewCount);
   return ratingsEl;
 }
 

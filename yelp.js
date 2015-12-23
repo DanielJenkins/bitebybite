@@ -43,10 +43,11 @@ yelpRouter.post('/search', function(req,res){
         };
 
         //Removes Duplicated Search Results
+        console.log('Results with duplicates: ' + allResults.length);
         uniqueResults = allResults.filter(function(elem, pos) {
           return allResults.indexOf(elem) == pos;
         })
-
+        console.log('Results with duplicates removed: ' + uniqueResults.length);
         console.log('Exporting yelp search results to default.js');
         JSON.stringify(uniqueResults);
         res.send(uniqueResults);
