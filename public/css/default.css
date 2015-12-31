@@ -138,6 +138,12 @@ p {
   text-shadow: 2px 2px 3px #100B09;
 }
 /*------------------------Search Results------------------------*/
+#resultMap {
+  height: 100%;
+}
+#resultMapRow {
+  height: 500px;
+}
 .resultName {
   font-weight: bold;
   font-size: 18px;

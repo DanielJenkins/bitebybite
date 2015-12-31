@@ -54,8 +54,6 @@ function runSearch() {
     if (xhr.status == 200) {
       console.log('Search results received by default.js');
       yelpResults = JSON.parse(xhr.responseText);
-      //console.log('First yelp result name: ' + yelpResults[0].name);
-
       loadMap(yelpResults,origin,destination);
       changeView('resultsScreen',null);
     }
@@ -65,9 +63,46 @@ function runSearch() {
   }
 }
 
+function initMap() {
+  console.log('Initializing Map');
+  var directionsService = new google.maps.DirectionsService;
+  var directionsDisplay = new google.maps.DirectionsRenderer;
+  console.log('originLat: ' + originLat);
+  var map = new google.maps.Map(document.getElementById('resultMap'), {
+    zoom: 8,
+    center: {lat: 33.6694600, lng: -117.8231100}
+  });
+  directionsDisplay.setMap(map);
+  calculateAndDisplayRoute(directionsService, directionsDisplay);
+}
+
+function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+  directionsService.route({
+    origin: originLatLng,
+    destination: destinationLatLng,
+    travelMode: google.maps.TravelMode.DRIVING
+  }, function(response, status) {
+    if (status === google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+    }
+    else {
+      window.alert('Directions request failed due to ' + status);
+    }
+  });
+}
+
 function loadMap(searchResults,origin,destination) {
   var holderEl = document.createElement('div');
   searchResultsEl.appendChild(holderEl);
+  var resultMapRow = document.createElement('div');
+  resultMapRow.className = 'row';
+  resultMapRow.id = 'resultMapRow';
+  holderEl.appendChild(resultMapRow);
+  var mapEl = document.createElement('div');
+  mapEl.className = 'col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8';
+  mapEl.id = 'resultMap';
+  resultMapRow.appendChild(mapEl);
+  initMap();
   for (var i = 0; i < searchResults.length; i++) {
     var searchResultRow = document.createElement('div');
     searchResultRow.className = 'row';
