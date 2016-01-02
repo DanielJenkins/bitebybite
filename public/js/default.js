@@ -3,6 +3,7 @@ var destinationElement = document.getElementById('destination');
 var searchTermEl = document.getElementById('category');
 var search = document.getElementById('search');
 var searchResultsEl = document.getElementById('searchResults');
+var bound = new google.maps.LatLngBounds();
 var originAutocomplete;
 var destinationAutocomplete;
 var yelpResults;
@@ -14,9 +15,11 @@ var destination;
 var destinationLat;
 var destinationLng;
 var destinationLatLng;
+var map;
 var searchPlaces = [];
 var nameEl = []
 var addressEl = [];
+var resultMarker = [];
 
 search.addEventListener('click',searchRequested,false);
 google.maps.event.addDomListener(window, 'load', init);
@@ -68,11 +71,15 @@ function initMap() {
   var directionsService = new google.maps.DirectionsService;
   var directionsDisplay = new google.maps.DirectionsRenderer;
   console.log('originLat: ' + originLat);
-  var map = new google.maps.Map(document.getElementById('resultMap'), {
+  map = new google.maps.Map(document.getElementById('resultMap'), {
     zoom: 8,
     center: {lat: 33.6694600, lng: -117.8231100}
   });
   directionsDisplay.setMap(map);
+  console.log('changing bounds to : ' + bound);
+  console.log('bounds before: ' + map.getBounds());
+  map.fitBounds(bound);
+  console.log('bounds after: ' + map.getBounds());
   calculateAndDisplayRoute(directionsService, directionsDisplay);
 }
 
@@ -104,6 +111,16 @@ function loadMap(searchResults,origin,destination) {
   resultMapRow.appendChild(mapEl);
   initMap();
   for (var i = 0; i < searchResults.length; i++) {
+    var resultLat = searchResults[i].location.coordinate.latitude;
+    var resultLng = searchResults[i].location.coordinate.longitude;
+    var resultLatLng = {lat: resultLat, lng: resultLng};
+    resultMarker[i] = new google.maps.Marker({
+      position: resultLatLng,
+      title: searchResults[i].name + ' - ' + searchResults[i].rating + ' stars'
+    });
+    resultMarker[i].setMap(map);
+    bound.extend(resultMarker[i].getPosition());
+
     var searchResultRow = document.createElement('div');
     searchResultRow.className = 'row';
     holderEl.appendChild(searchResultRow);
