@@ -129,7 +129,7 @@ function loadMap(searchResults,origin,destination) {
       searchResultRow.className = 'row';
       holderEl.appendChild(searchResultRow);
       var searchResultContent = document.createElement('div');
-      searchResultContent.className = 'col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 searchResult';
+      searchResultContent.className = 'col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 searchResult darkredBackground';
       searchResultRow.appendChild(searchResultContent);
       var searchResultContentRow = document.createElement('div');
       searchResultContent.appendChild(searchResultContentRow);
@@ -149,7 +149,7 @@ function loadMap(searchResults,origin,destination) {
       searchResultLeft.appendChild(new AddRating(searchResults[i]));
       var displayAddress = searchResults[i].location.display_address;
       addressEl[i] = document.createElement('p');
-      addressEl[i].className = 'addressText';
+      addressEl[i].className = 'addressText redgrey';
       for (var k = 0; k < displayAddress.length; k++) {
         if (k !== 0) {
           var br = document.createElement('br');
@@ -230,7 +230,7 @@ function AddRating(business) {
   ratingsEl.appendChild(star5);
   var reviewCount = document.createElement('p');
   reviewCount.appendChild(document.createTextNode(' ' + business.review_count + ' reviews'));
-  reviewCount.className = 'reviewText';
+  reviewCount.className = 'reviewText redgrey';
   ratingsEl.appendChild(reviewCount);
   return ratingsEl;
 }

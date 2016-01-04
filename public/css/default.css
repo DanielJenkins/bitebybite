@@ -4,76 +4,76 @@ h1, h2, h3, h4, h5, h6, a {
 p {
   font-family: 'Roboto Slab', 'Bitter', serif;
 }
-.colors {
-  height: 100px;
-  width: 100%;
-  border: 1px solid #100B09;
-}
 .lightblueBackground {
-  background-color: #0076E9;
+  background-color: #0076e9;
 }
 .mediumblueBackground {
-  background-color: #00264A;
+  background-color: #00264a;
 }
 .bluegreyBackground {
-  background-color: #45586B;
+  background-color: #45586b;
 }
 .darkblueBackground {
-  background-color: #031C34;
+  background-color: #031c34;
 }
 .blueblackBackground {
-  background-color: #100B09;
+  background-color: #100b09;
 }
 .greenBackground {
   background-color: #003919;
 }
 .redgreyBackground {
-  background-color: #A47265;
+  background-color: #a47265;
 }
 .brightredBackground {
-  background-color: #721800;
+  background-color: #ca2f16;
 }
 .darkredBackground {
   background-color: #501100;
 }
 .redblackBackground {
-  background-color: #100B09;
+  background-color: #100b09;
 }
 .lightblue {
-  color: #0076E9;
+  color: #0076e9;
 }
 .mediumblue {
-  color: #00264A;
+  color: #00264a;
 }
 .bluegrey {
-  color: #45586B;
+  color: #45586b;
 }
 .darkblue {
-  color: #031C34;
+  color: #031c34;
 }
 .blueblack {
-  color: #100B09;
+  color: #100b09;
 }
 .green {
   color: #003919;
 }
 .redgrey {
-  color: #A47265;
+  color: #a47265;
 }
 .brightred {
-  color: #721800;
+  color: #ca2f16;
 }
 .darkred {
   color: #501100;
 }
 .redblack {
-  color: #100B09;
+  color: #100b09;
 }
 /*-----------------------------------------------------------*/
 /*Front Page*/
+.formLabel {
+  font-size: 16px;
+  text-shadow: 1px 1px 3px #100b09;
+  font-family: 'Lato', 'Arimo', sans-serif;
+}
 .headerLg {
   height: 350px;
-  background: #100B09;
+  background: #100b09;
 }
 .headerLg:after {
   content: " ";
@@ -90,7 +90,7 @@ p {
   opacity: 0.4;
 }
 .headerXs {
-  background: #100B09;
+  background: #100b09;
 }
 .headerXs:after {
   content: " ";
@@ -119,11 +119,11 @@ p {
 }
 .titleLg {
   font-size: 64px;
-  text-shadow: 2px 2px 6px #100B09;
+  text-shadow: 2px 2px 6px #100b09;
 }
 .titleXs {
   font-size: 48px;
-  text-shadow: 2px 2px 6px #100B09;
+  text-shadow: 2px 2px 6px #100b09;
 }
 .spacerLg {
   height: 100px;
@@ -132,10 +132,10 @@ p {
   height: 40px;
 }
 .subtitleLg {
-  text-shadow: 1px 1px 3px #100B09;
+  text-shadow: 1px 1px 3px #100b09;
 }
 .subtitleXs {
-  text-shadow: 2px 2px 3px #100B09;
+  text-shadow: 2px 2px 4px #100b09;
 }
 /*------------------------Search Results------------------------*/
 #resultMap {
@@ -147,6 +147,7 @@ p {
 .resultName {
   font-weight: bold;
   font-size: 18px;
+  text-shadow: 1px 1px 1px #100b09;
 }
 .reviewText {
   margin: 0px;
@@ -155,8 +156,7 @@ p {
   font-family: 'Roboto Slab', 'Bitter', serif;
 }
 .searchResult {
-  background-color: #0076E9;
-  border: 2px solid #45586B;
+  border: 2px solid #45586b;
   border-radius: 4px;
 }
 .searchResultRight {
