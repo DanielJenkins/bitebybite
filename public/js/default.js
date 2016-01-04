@@ -75,11 +75,6 @@ function initMap() {
     zoom: 8,
     center: {lat: 33.6694600, lng: -117.8231100}
   });
-  directionsDisplay.setMap(map);
-  console.log('changing bounds to : ' + bound);
-  console.log('bounds before: ' + map.getBounds());
-  map.fitBounds(bound);
-  console.log('bounds after: ' + map.getBounds());
   calculateAndDisplayRoute(directionsService, directionsDisplay);
 }
 
@@ -96,9 +91,13 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
       window.alert('Directions request failed due to ' + status);
     }
   });
+  directionsDisplay.setMap(map);
 }
 
 function loadMap(searchResults,origin,destination) {
+  while (searchResultsEl.firstChild) {
+    searchResultsEl.removeChild(searchResultsEl.firstChild);
+  }
   var holderEl = document.createElement('div');
   searchResultsEl.appendChild(holderEl);
   var resultMapRow = document.createElement('div');
@@ -156,6 +155,10 @@ function loadMap(searchResults,origin,destination) {
     };
     searchResultRight.appendChild(addressEl[i]);
   };
+  console.log('changing bounds to : ' + bound);
+  console.log('bounds before: ' + map.getBounds());
+  map.fitBounds(bound);
+  console.log('bounds after: ' + map.getBounds());
 }
 
 function AddRating(business) {

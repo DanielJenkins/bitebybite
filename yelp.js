@@ -32,6 +32,7 @@ yelpRouter.post('/search', function(req,res){
     client.search({term: responseBody[m].searchTerm,ll: latLng})
     .then(function (data) {
       businesses = data.businesses;
+      businesses = businesses.slice(0, 5);
       searchResults[m] = businesses;
       console.log('Yelp results returned for ' + m + 'th search');
 
