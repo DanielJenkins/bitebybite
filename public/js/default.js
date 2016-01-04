@@ -3,7 +3,7 @@ var destinationElement = document.getElementById('destination');
 var searchTermEl = document.getElementById('category');
 var search = document.getElementById('search');
 var searchResultsEl = document.getElementById('searchResults');
-var bound = new google.maps.LatLngBounds();
+var bound;
 var originAutocomplete;
 var destinationAutocomplete;
 var yelpResults;
@@ -16,7 +16,9 @@ var destinationLat;
 var destinationLng;
 var destinationLatLng;
 var map;
+var holderEl;
 var waypoint = [];
+var navSteps = [];
 var searchPlaces = [];
 var searchResult = [];
 var nameEl = []
@@ -41,8 +43,15 @@ function runSearch() {
   destination = destinationAutocomplete.getPlace();
   destinationLat = destination.geometry.location.lat();
   destinationLng = destination.geometry.location.lng();
-  destinationLatLng = new google.maps.LatLng({lat: destinationLat, lng: destinationLng}); 
+  destinationLatLng = new google.maps.LatLng({lat: destinationLat, lng: destinationLng});
+  //Generate map and get step coordinates
+  createMapEl();
 
+  console.log('originLatLng: ' + originLatLng);
+  console.log('destinationLatLng: ' + destinationLatLng);
+  console.log('nav steps 1: ' + navSteps[0]);
+
+  //Get Yelp Search Locations
   var numSearches = 4; //Starts at 0
   var LatLngObj;
   searchPlaces[0] = originLatLng;
@@ -50,17 +59,16 @@ function runSearch() {
     LatLngObj = google.maps.geometry.spherical.interpolate(originLatLng, destinationLatLng, (i/numSearches));
     searchPlaces[i] = {searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng()};
   };
+  //Send Request to Yelp
   var jsonSearchPlaces = JSON.stringify(searchPlaces);
   var xhr = new XMLHttpRequest();
   xhr.open('POST','/yelp/search',true);
   xhr.send(jsonSearchPlaces);
-
+  //Get Results from Yelp
   xhr.onload = function() {
     if (xhr.status == 200) {
-      console.log('Search results received by default.js');
       yelpResults = JSON.parse(xhr.responseText);
-      loadMap(yelpResults,origin,destination);
-      changeView('resultsScreen',null);
+      addResultsToPage(yelpResults,origin,destination);
     }
     else {
       console.log('error: ' + err);
@@ -68,41 +76,13 @@ function runSearch() {
   }
 }
 
-function initMap() {
-  console.log('Initializing Map');
-  var directionsService = new google.maps.DirectionsService;
-  var directionsDisplay = new google.maps.DirectionsRenderer;
-  console.log('originLat: ' + originLat);
-  map = new google.maps.Map(document.getElementById('resultMap'), {
-    zoom: 8,
-    center: {lat: 33.6694600, lng: -117.8231100}
-  });
-  calculateAndDisplayRoute(directionsService, directionsDisplay);
-}
-
-function calculateAndDisplayRoute(directionsService, directionsDisplay) {
-  directionsService.route({
-    origin: originLatLng,
-    waypoints: waypoint,
-    destination: destinationLatLng,
-    travelMode: google.maps.TravelMode.DRIVING
-  }, function(response, status) {
-    if (status === google.maps.DirectionsStatus.OK) {
-      directionsDisplay.setDirections(response);
-    }
-    else {
-      window.alert('Directions request failed due to ' + status);
-    }
-  });
-  directionsDisplay.setMap(map);
-}
-
-function loadMap(searchResults,origin,destination) {
+//Generate Map El
+function createMapEl() {
   while (searchResultsEl.firstChild) {
     searchResultsEl.removeChild(searchResultsEl.firstChild);
   }
   waypoint = [];
-  var holderEl = document.createElement('div');
+  holderEl = document.createElement('div');
   searchResultsEl.appendChild(holderEl);
   var resultMapRow = document.createElement('div');
   resultMapRow.className = 'row';
@@ -113,6 +93,48 @@ function loadMap(searchResults,origin,destination) {
   mapEl.id = 'resultMap';
   resultMapRow.appendChild(mapEl);
   initMap();
+}
+
+//Generate Map
+function initMap() {
+  var directionsService = new google.maps.DirectionsService;
+  var directionsDisplay = new google.maps.DirectionsRenderer;
+  map = new google.maps.Map(document.getElementById('resultMap'), {
+    zoom: 8,
+    center: {lat: 33.6694600, lng: -117.8231100}
+  });
+  calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps);
+}
+
+//Generate Directions and Get Step Coordinates
+function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps) {
+  directionsService.route({
+    origin: originLatLng,
+    waypoints: waypoint,
+    destination: destinationLatLng,
+    travelMode: google.maps.TravelMode.DRIVING
+  }, function(response, status) {
+    if (status === google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+      navSteps = [];
+      var theRoute = response.routes[0].legs[0];
+      console.log('originLatLng: ' + originLatLng);
+      for (var s = 0; s < theRoute.steps.length; s++) {
+        navSteps[s] = (theRoute.steps[s].start_location);
+        console.log('step ' + s + ' ' + navSteps[s]);
+      }
+      console.log('destinationLatLng: ' + destinationLatLng);
+    }
+    else {
+      window.alert('Directions request failed due to ' + status);
+    }
+  });
+  directionsDisplay.setMap(map);
+}
+
+//Adds Yelp Results as a list and as markers on the map
+function addResultsToPage(searchResults,origin,destination) {
+  bound = new google.maps.LatLngBounds();
   for (var i = 0; i < searchResults.length; i++) {
     (function () {
       var resultLat = searchResults[i].location.coordinate.latitude;
@@ -144,7 +166,6 @@ function loadMap(searchResults,origin,destination) {
       nameEl[i].className = 'brightred resultName';
       var nameText = document.createTextNode(searchResults[i].name);
       nameEl[i].appendChild(nameText);
-      nameEl[i].addEventListener('click',function() {changeView('expandedOption',searchResults[i])},false);
       searchResultLeft.appendChild(nameEl[i]);
       searchResultLeft.appendChild(new AddRating(searchResults[i]));
       var displayAddress = searchResults[i].location.display_address;
@@ -171,11 +192,9 @@ function loadMap(searchResults,origin,destination) {
       },false);
     }());
   };
-  console.log('changing bounds to : ' + bound);
-  console.log('bounds before: ' + map.getBounds());
   map.fitBounds(bound);
-  console.log('bounds after: ' + map.getBounds());
 }
+
 
 function AddRating(business) {
   ratingsEl = document.createElement('div');
@@ -235,19 +254,7 @@ function AddRating(business) {
   return ratingsEl;
 }
 
-////Change visibility of parts of the page
-function changeView(view,business) {
-  console.log('Changing page view to ' + view);
-  if (view === 'loadScreen') {
-  }
-  if (view === 'resultsScreen') {
-  };
-  if (view === 'expandedOption'){
-  }
-}
-
 function searchRequested(e) {
   e.preventDefault();
-  changeView('loadScreen',null);
   runSearch();
 }
