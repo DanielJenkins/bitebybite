@@ -106,17 +106,22 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
         searchPlaces[i] = {searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng()};
       };
       */
-
+      allNavSteps = [];
       allNavSteps[0] = originLatLng;
       for (var i = 0; i < navSteps.length; i++) {
         allNavSteps.push(navSteps[i]);
       };
       allNavSteps.push(destinationLatLng);
+      searchPlaces = [];
       for (var i = 0; i < allNavSteps.length; i++) {
         searchPlaces.push({searchTerm: searchTerm, lat: allNavSteps[i].lat(), lng: allNavSteps[i].lng()});
         if(i < allNavSteps.length-1) {
           var distance = google.maps.geometry.spherical.computeDistanceBetween(allNavSteps[i],allNavSteps[i+1]);
           var numSearches = (distance-(distance%16093.4))/16093.4;
+          for (var k = 0; k < numSearches; k++) {
+            var LatLngObj = google.maps.geometry.spherical.interpolate(allNavSteps[i], allNavSteps[i+1], (k/numSearches));
+            searchPlaces.push({searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng()});
+          };
         }
       };
       searchPlaces[navSteps.length] = {searchTerm: searchTerm, lat: destinationLatLng.lat(), lng: destinationLatLng.lng()};
