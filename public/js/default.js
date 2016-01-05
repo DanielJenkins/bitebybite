@@ -107,7 +107,9 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
       }
 
       //Get Yelp Search Locations
-      /*
+
+      /*---------------
+      //This segment can be used to run searches along a straight line between the origin and destination
       var numSearches = 4; //Starts at 0
       var LatLngObj;
       searchPlaces[0] = originLatLng;
@@ -115,10 +117,9 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
         LatLngObj = google.maps.geometry.spherical.interpolate(originLatLng, destinationLatLng, (i/numSearches));
         searchPlaces[i] = {searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng()};
       };
-      */
+      ---------------*/
 
-      console.log('originLatLng: '+originLatLng);
-      console.log('destinationLatLng: '+destinationLatLng);
+      //This segment can be used to run searches at steps along a navigation route and various midpoints between them.
       allNavSteps = [];
       allNavSteps[0] = originLatLng;
       for (var i = 0; i < navSteps.length; i++) {
