@@ -17,8 +17,7 @@ var client = yelp.createClient({
 });
 
 yelpRouter.post('/search', function(req,res){
-  responseBody = JSON.parse(req.body);
-
+  var responseBody = JSON.parse(req.body);
   var responses = 0;
   var businesses = [];
   var searchResults = [];
@@ -41,8 +40,9 @@ yelpRouter.post('/search', function(req,res){
       responses++;
       //Runs once all search results have been received from yelp
       if(responses===responseBody.length) {
+        var currentBusinesses = [];
         for (var k = 0; k < searchResults.length; k++) {
-          var currentBusinesses = searchResults[k];
+          currentBusinesses = searchResults[k];
           for (var d = 0; d < currentBusinesses.length; d++) {
             allResults.push(currentBusinesses[d]);
             allUrls.push(currentBusinesses[d].url);

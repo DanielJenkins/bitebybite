@@ -33,6 +33,16 @@ google.maps.event.addDomListener(window, 'load', init);
 function init() {
   originAutocomplete = new google.maps.places.Autocomplete(originElement);
   destinationAutocomplete = new google.maps.places.Autocomplete(destinationElement);
+  google.maps.event.addDomListener(originElement, 'keydown', function(e) { 
+    if (e.keyCode == 13) { 
+      e.preventDefault(); 
+    }
+  }); 
+  google.maps.event.addDomListener(destinationElement, 'keydown', function(e) { 
+    if (e.keyCode == 13) { 
+      e.preventDefault(); 
+    }
+  }); 
 }
 
 function runSearch() {
@@ -106,6 +116,9 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
         searchPlaces[i] = {searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng()};
       };
       */
+
+      console.log('originLatLng: '+originLatLng);
+      console.log('destinationLatLng: '+destinationLatLng);
       allNavSteps = [];
       allNavSteps[0] = originLatLng;
       for (var i = 0; i < navSteps.length; i++) {
@@ -114,17 +127,30 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
       allNavSteps.push(destinationLatLng);
       searchPlaces = [];
       for (var i = 0; i < allNavSteps.length; i++) {
-        searchPlaces.push({searchTerm: searchTerm, lat: allNavSteps[i].lat(), lng: allNavSteps[i].lng()});
+        console.log(i + ' step: ' + allNavSteps[i]);
+        if (searchPlaces.length==0) {
+          searchPlaces.push({searchTerm: searchTerm, lat: allNavSteps[i].lat(), lng: allNavSteps[i].lng(), source: 'steps'});
+        }
+        var previousSearch = new google.maps.LatLng(searchPlaces[searchPlaces.length-1].lat, searchPlaces[searchPlaces.length-1].lng);
+        if((google.maps.geometry.spherical.computeDistanceBetween(previousSearch,allNavSteps[i]))>4828.03) {
+          searchPlaces.push({searchTerm: searchTerm, lat: allNavSteps[i].lat(), lng: allNavSteps[i].lng(), source: i + 'steps'});
+        }
         if(i < allNavSteps.length-1) {
           var distance = google.maps.geometry.spherical.computeDistanceBetween(allNavSteps[i],allNavSteps[i+1]);
-          var numSearches = (distance-(distance%16093.4))/16093.4;
-          for (var k = 0; k < numSearches; k++) {
-            var LatLngObj = google.maps.geometry.spherical.interpolate(allNavSteps[i], allNavSteps[i+1], (k/numSearches));
-            searchPlaces.push({searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng()});
+          if (distance > 16093.4) {
+            var numSearches = (distance-(distance%4828.03))/4828.03;
+            for (var k = 0; k < numSearches; k++) {
+              var LatLngObj = google.maps.geometry.spherical.interpolate(allNavSteps[i], allNavSteps[i+1], (k/numSearches));
+              console.log(i + ' calculation: ' + LatLngObj);
+              searchPlaces.push({searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng(), source: i + ' calculation'});
+            };
           };
         }
       };
-      searchPlaces[navSteps.length] = {searchTerm: searchTerm, lat: destinationLatLng.lat(), lng: destinationLatLng.lng()};
+
+      for (var i = 0; i < searchPlaces.length; i++) {
+        console.log(i+' search: ('+searchPlaces[i].lat+', '+searchPlaces[i].lng+') '+searchPlaces[i].source);
+      };
 
       //Send Request to Yelp
       var jsonSearchPlaces = JSON.stringify(searchPlaces);
@@ -155,6 +181,7 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
 //Adds Yelp Results as a list and as markers on the map
 function addResultsToPage(searchResults,origin,destination) {
   bound = new google.maps.LatLngBounds();
+  resultMarker = [];
   for (var i = 0; i < searchResults.length; i++) {
     (function () {
       var resultLat = searchResults[i].location.coordinate.latitude;
