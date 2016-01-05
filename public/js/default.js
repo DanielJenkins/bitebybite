@@ -16,7 +16,9 @@ var destinationLat;
 var destinationLng;
 var destinationLatLng;
 var map;
+var searchTerm;
 var holderEl;
+var allNavSteps = [];
 var waypoint = [];
 var navSteps = [];
 var searchPlaces = [];
@@ -35,7 +37,7 @@ function init() {
 
 function runSearch() {
   //Get origin and destination lat&lng
-  var searchTerm = JSON.stringify(searchTermEl.value);
+  searchTerm = JSON.stringify(searchTermEl.value);
   origin = originAutocomplete.getPlace();
   originLat = origin.geometry.location.lat();
   originLng = origin.geometry.location.lng();
@@ -46,34 +48,6 @@ function runSearch() {
   destinationLatLng = new google.maps.LatLng({lat: destinationLat, lng: destinationLng});
   //Generate map and get step coordinates
   createMapEl();
-
-  console.log('originLatLng: ' + originLatLng);
-  console.log('destinationLatLng: ' + destinationLatLng);
-  console.log('nav steps 1: ' + navSteps[0]);
-
-  //Get Yelp Search Locations
-  var numSearches = 4; //Starts at 0
-  var LatLngObj;
-  searchPlaces[0] = originLatLng;
-  for (var i = 0; i <= numSearches; i++) {
-    LatLngObj = google.maps.geometry.spherical.interpolate(originLatLng, destinationLatLng, (i/numSearches));
-    searchPlaces[i] = {searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng()};
-  };
-  //Send Request to Yelp
-  var jsonSearchPlaces = JSON.stringify(searchPlaces);
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST','/yelp/search',true);
-  xhr.send(jsonSearchPlaces);
-  //Get Results from Yelp
-  xhr.onload = function() {
-    if (xhr.status == 200) {
-      yelpResults = JSON.parse(xhr.responseText);
-      addResultsToPage(yelpResults,origin,destination);
-    }
-    else {
-      console.log('error: ' + err);
-    }
-  }
 }
 
 //Generate Map El
@@ -118,12 +92,53 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
       directionsDisplay.setDirections(response);
       navSteps = [];
       var theRoute = response.routes[0].legs[0];
-      console.log('originLatLng: ' + originLatLng);
       for (var s = 0; s < theRoute.steps.length; s++) {
         navSteps[s] = (theRoute.steps[s].start_location);
-        console.log('step ' + s + ' ' + navSteps[s]);
       }
-      console.log('destinationLatLng: ' + destinationLatLng);
+
+      //Get Yelp Search Locations
+      /*
+      var numSearches = 4; //Starts at 0
+      var LatLngObj;
+      searchPlaces[0] = originLatLng;
+      for (var i = 0; i <= numSearches; i++) {
+        LatLngObj = google.maps.geometry.spherical.interpolate(originLatLng, destinationLatLng, (i/numSearches));
+        searchPlaces[i] = {searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng()};
+      };
+      */
+
+      allNavSteps[0] = originLatLng;
+      for (var i = 0; i < navSteps.length; i++) {
+        allNavSteps.push(navSteps[i]);
+      };
+      allNavSteps.push(destinationLatLng);
+      for (var i = 0; i < allNavSteps.length; i++) {
+        searchPlaces.push({searchTerm: searchTerm, lat: allNavSteps[i].lat(), lng: allNavSteps[i].lng()});
+        if(i < allNavSteps.length-1) {
+          var distance = google.maps.geometry.spherical.computeDistanceBetween(allNavSteps[i],allNavSteps[i+1]);
+          var numSearches = (distance-(distance%16093.4))/16093.4;
+        }
+      };
+      searchPlaces[navSteps.length] = {searchTerm: searchTerm, lat: destinationLatLng.lat(), lng: destinationLatLng.lng()};
+
+      //Send Request to Yelp
+      var jsonSearchPlaces = JSON.stringify(searchPlaces);
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST','/yelp/search',true);
+      xhr.send(jsonSearchPlaces);
+      //Get Results from Yelp
+      xhr.onload = function() {
+        if (xhr.status == 200) {
+          yelpResults = JSON.parse(xhr.responseText);
+          addResultsToPage(yelpResults,origin,destination);
+        }
+        else {
+          console.log('error: ' + err);
+        }
+      }
+
+
+
     }
     else {
       window.alert('Directions request failed due to ' + status);
