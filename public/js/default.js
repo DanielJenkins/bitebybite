@@ -245,6 +245,7 @@ function addResultsToPage(searchResults,origin,destination) {
 function loadDetails() {
   var detailsHolder = document.createElement('div');
   searchResultsEl.appendChild(detailsHolder);
+  //Generate Map with Waypoint
   var detailsMapRow = document.createElement('div');
   detailsMapRow.className = 'row';
   detailsMapRow.id = 'detailsMapRow';
@@ -253,6 +254,15 @@ function loadDetails() {
   detailsMapEl.className = 'col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8';
   detailsMapEl.id = 'detailsMap';
   detailsMapRow.appendChild(detailsMapEl);
+  //Generate Navigation Instructions
+  var instructionsRow = document.createElement('div');
+  instructionsRow.className = 'row';
+  detailsHolder.appendChild(instructionsRow);
+  var instructionsEl = document.createElement('div');
+  instructionsEl.className = 'col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8';
+  instructionsEl.id = 'instructions';
+  instructionsRow.appendChild(instructionsEl);
+
   changeView('details');
   initDetailsMap();
 }
@@ -266,6 +276,7 @@ function initDetailsMap() {
     center: {lat: 33.6694600, lng: -117.8231100}
   });
   detailsDirectionsDisplay.setMap(detailsMap);
+  detailsDirectionsDisplay.setPanel(document.getElementById('instructions'));
   routeDetails(detailsDirectionsService,detailsDirectionsDisplay);
 }
 

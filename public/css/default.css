@@ -144,6 +144,11 @@ p {
 #detailsMapRow {
   height: 500px;
 }
+#instructions {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  background-color: #eeeeee;
+}
 #resultMap {
   height: 100%;
 }
