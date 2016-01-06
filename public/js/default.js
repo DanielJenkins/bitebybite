@@ -1,34 +1,35 @@
-var originElement = document.getElementById('origin');
 var destinationElement = document.getElementById('destination');
-var searchTermEl = document.getElementById('category');
+var detailsHolder = document.getElementById('detailsHolder');
+var holderEl = document.getElementById('holderEl');
+var loadingEl = document.getElementById('loadingEl');
+var originElement = document.getElementById('origin');
 var search = document.getElementById('search');
 var searchResultsEl = document.getElementById('searchResults');
-var holderEl = document.getElementById('holderEl');
-var detailsHolder = document.getElementById('detailsHolder');
-var loadingEl = document.getElementById('loadingEl');
+var searchTermEl = document.getElementById('category');
 var bound;
-var originAutocomplete;
-var destinationAutocomplete;
-var yelpResults;
-var origin;
-var originLat;
-var originLng;
-var originLatLng;
 var destination;
+var destinationAutocomplete;
 var destinationLat;
 var destinationLng;
 var destinationLatLng;
-var map;
 var detailsMap;
+var map;
+var origin;
+var originAutocomplete;
+var originLat;
+var originLng;
+var originLatLng;
 var searchTerm;
+var yelpResults;
+var addressEl = [];
 var allNavSteps = [];
-var waypoint = [];
+var nameEl = []
 var navSteps = [];
+var resultMarker = [];
 var searchPlaces = [];
 var searchResult = [];
-var nameEl = []
-var addressEl = [];
-var resultMarker = [];
+var selection = [];
+var waypoint = [];
 
 search.addEventListener('click',searchRequested,false);
 google.maps.event.addDomListener(window, 'load', init);
@@ -185,6 +186,7 @@ function addResultsToPage(searchResults,origin,destination) {
   resultMarker = [];
   for (var i = 0; i < searchResults.length; i++) {
     (function () {
+      var currentResult = searchResults[i];
       var resultLat = searchResults[i].location.coordinate.latitude;
       var resultLng = searchResults[i].location.coordinate.longitude;
       var resultLatLng = {lat: resultLat, lng: resultLng};
@@ -233,10 +235,12 @@ function addResultsToPage(searchResults,origin,destination) {
       //Adds Waypoint to map
       nameEl[i].addEventListener('click',function() {
         waypoint[0] = {location: resultLatLng};
+        selection = currentResult;
         loadDetails();
       },false);
       resultMarker[i].addListener('click',function() {
         waypoint[0] = {location: resultLatLng};
+        selection = currentResult;
         loadDetails();
       },false);
     }());
@@ -246,6 +250,9 @@ function addResultsToPage(searchResults,origin,destination) {
 
 function loadDetails() {
   //Generate Map with Waypoint
+  while (detailsHolder.firstChild) {
+    detailsHolder.removeChild(detailsHolder.firstChild);
+  }
   var detailsMapRow = document.createElement('div');
   detailsMapRow.className = 'row';
   detailsMapRow.id = 'detailsMapRow';
@@ -255,6 +262,54 @@ function loadDetails() {
   detailsMapEl.id = 'detailsMap';
   detailsMapRow.appendChild(detailsMapEl);
   //Generate Navigation Instructions
+  var selctionRow = document.createElement('div');
+  selctionRow.className = 'row';
+  detailsHolder.appendChild(selctionRow);
+  var selectionEl = document.createElement('div');
+  selectionEl.className = 'col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 darkredBackground';
+  selectionEl.id = 'selectionEl';
+  selctionRow.appendChild(selectionEl);
+  //Selection Name
+  var selectionNameEl = document.createElement('h2');
+  selectionNameEl.className = 'brightred selectionName';
+  var selectionName = document.createTextNode(selection.name);
+  selectionNameEl.appendChild(selectionName);
+  //SelectionRating
+  var selectionRatingEl = new AddRating(selection);
+  //URL
+  var selectionUrlEl = document.createElement('a');
+  console.log('URL: ' + selection.url);
+  selectionUrlEl.href = selection.url;
+  selectionUrlEl.target = '_blank';
+  selectionUrlEl.id = 'selectionUrl';
+  var selectionUrl = document.createTextNode('View this Result on Yelp');
+  selectionUrlEl.appendChild(selectionUrl);
+  //SelectionAddress
+  var selectionAddress = selection.location.display_address;
+  console.log('Selection Address: ' + selectionAddress);
+  var selectionAddressEl = document.createElement('p');
+  selectionAddressEl.className = 'addressText redgrey';
+  for (var k = 0; k < selectionAddress.length; k++) {
+    if (k !== 0) {
+      var selectionBr = document.createElement('br');
+      selectionAddressEl.appendChild(selectionBr);
+    };
+    var selectionNewline = document.createTextNode(selectionAddress[k]);
+    selectionAddressEl.appendChild(selectionNewline);
+  };
+
+  var selectionLeft = document.createElement('div');
+  var selectionRight = document.createElement('div');
+  selectionLeft.className = 'col-xs-offset-1 col-xs-11 col-sm-offset-0 col-sm-7 col-md-7';
+  selectionRight.className = 'col-xs-offset-1 col-xs-11 col-sm-offset-0 col-sm-5 col-md-5 selectionRight';
+  selectionEl.appendChild(selectionLeft);
+  selectionEl.appendChild(selectionRight);
+  selectionLeft.appendChild(selectionNameEl);
+  selectionLeft.appendChild(selectionRatingEl);
+  selectionLeft.appendChild(selectionUrlEl);
+  selectionRight.appendChild(selectionAddressEl);
+
+
   var instructionsRow = document.createElement('div');
   instructionsRow.className = 'row';
   detailsHolder.appendChild(instructionsRow);
