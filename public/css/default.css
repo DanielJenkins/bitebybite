@@ -144,6 +144,9 @@ p {
 #detailsMapRow {
   height: 500px;
 }
+#loadingEl {
+  display: none;
+}
 #instructions {
   margin-top: 15px;
   margin-bottom: 15px;

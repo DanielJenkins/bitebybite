@@ -3,6 +3,9 @@ var destinationElement = document.getElementById('destination');
 var searchTermEl = document.getElementById('category');
 var search = document.getElementById('search');
 var searchResultsEl = document.getElementById('searchResults');
+var holderEl = document.getElementById('holderEl');
+var detailsHolder = document.getElementById('detailsHolder');
+var loadingEl = document.getElementById('loadingEl');
 var bound;
 var originAutocomplete;
 var destinationAutocomplete;
@@ -18,8 +21,6 @@ var destinationLatLng;
 var map;
 var detailsMap;
 var searchTerm;
-var holderEl;
-var detailsHolder;
 var allNavSteps = [];
 var waypoint = [];
 var navSteps = [];
@@ -64,14 +65,11 @@ function runSearch() {
 
 //Generate Map El
 function createMapEl() {
-  while (searchResultsEl.firstChild) {
-    searchResultsEl.removeChild(searchResultsEl.firstChild);
+  changeView('loading');
+  while (holderEl.firstChild) {
+    holderEl.removeChild(holderEl.firstChild);
   }
   waypoint = [];
-  holderEl = document.createElement('div');
-  searchResultsEl.appendChild(holderEl);
-  detailsHolder = document.createElement('div');
-  searchResultsEl.appendChild(detailsHolder);
   var resultMapRow = document.createElement('div');
   resultMapRow.className = 'row';
   resultMapRow.id = 'resultMapRow';
@@ -80,7 +78,7 @@ function createMapEl() {
   mapEl.className = 'col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8';
   mapEl.id = 'resultMap';
   resultMapRow.appendChild(mapEl);
-  changeView('results');
+
   initMap();
 }
 
@@ -164,9 +162,13 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
       xhr.onload = function() {
         if (xhr.status == 200) {
           yelpResults = JSON.parse(xhr.responseText);
+          changeView('results');
+          google.maps.event.trigger(map, 'resize');
           addResultsToPage(yelpResults,origin,destination);
         }
         else {
+          changeView('results');
+          google.maps.event.trigger(map, 'resize');
           console.log('error: ' + err);
         }
       }
@@ -243,8 +245,6 @@ function addResultsToPage(searchResults,origin,destination) {
 }
 
 function loadDetails() {
-  var detailsHolder = document.createElement('div');
-  searchResultsEl.appendChild(detailsHolder);
   //Generate Map with Waypoint
   var detailsMapRow = document.createElement('div');
   detailsMapRow.className = 'row';
@@ -262,7 +262,6 @@ function loadDetails() {
   instructionsEl.className = 'col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8';
   instructionsEl.id = 'instructions';
   instructionsRow.appendChild(instructionsEl);
-
   changeView('details');
   initDetailsMap();
 }
@@ -363,17 +362,21 @@ function searchRequested(e) {
 
 function changeView(page) {
   if (page == 'details') {
-    searchResultsEl.removeChild(holderEl);
-    searchResultsEl.appendChild(detailsHolder);
-
-    //detailsHolder.style.display= 'visible';
-    //holderEl.style.display= 'hidden';
+    console.log('Displaying Selection Details');
+    loadingEl.style.display = 'none';
+    holderEl.style.display = 'none';
+    detailsHolder.style.display = 'block';
   }
   else if (page == 'results') {
-    searchResultsEl.appendChild(holderEl);
-    searchResultsEl.removeChild(detailsHolder);
-
-    //holderEl.style.display= 'visible';
-    //detailsHolder.style.display= 'hidden';
+    console.log('Displaying Results');
+    loadingEl.style.display = 'none';
+    holderEl.style.display = 'inline';
+    detailsHolder.style.display = 'none';
+  }
+  else if (page == 'loading') {
+    console.log('Displaying Loading Screen');
+    loadingEl.style.display = 'block';
+    holderEl.style.display = 'none';
+    detailsHolder.style.display = 'none';
   };
 }
