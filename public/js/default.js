@@ -16,8 +16,10 @@ var destinationLat;
 var destinationLng;
 var destinationLatLng;
 var map;
+var detailsMap;
 var searchTerm;
 var holderEl;
+var detailsHolder;
 var allNavSteps = [];
 var waypoint = [];
 var navSteps = [];
@@ -68,6 +70,8 @@ function createMapEl() {
   waypoint = [];
   holderEl = document.createElement('div');
   searchResultsEl.appendChild(holderEl);
+  detailsHolder = document.createElement('div');
+  searchResultsEl.appendChild(detailsHolder);
   var resultMapRow = document.createElement('div');
   resultMapRow.className = 'row';
   resultMapRow.id = 'resultMapRow';
@@ -76,10 +80,11 @@ function createMapEl() {
   mapEl.className = 'col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8';
   mapEl.id = 'resultMap';
   resultMapRow.appendChild(mapEl);
+  changeView('results');
   initMap();
 }
 
-//Generate Map
+//Generate Results Map
 function initMap() {
   var directionsService = new google.maps.DirectionsService;
   var directionsDisplay = new google.maps.DirectionsRenderer;
@@ -87,6 +92,7 @@ function initMap() {
     zoom: 8,
     center: {lat: 33.6694600, lng: -117.8231100}
   });
+  directionsDisplay.setMap(map);
   calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps);
 }
 
@@ -128,7 +134,6 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
       allNavSteps.push(destinationLatLng);
       searchPlaces = [];
       for (var i = 0; i < allNavSteps.length; i++) {
-        console.log(i + ' step: ' + allNavSteps[i]);
         if (searchPlaces.length==0) {
           searchPlaces.push({searchTerm: searchTerm, lat: allNavSteps[i].lat(), lng: allNavSteps[i].lng(), source: 'steps'});
         }
@@ -149,11 +154,8 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
         }
       };
 
-      for (var i = 0; i < searchPlaces.length; i++) {
-        console.log(i+' search: ('+searchPlaces[i].lat+', '+searchPlaces[i].lng+') '+searchPlaces[i].source);
-      };
-
       //Send Request to Yelp
+      console.log('Searching yelp at ' + searchPlaces.length + ' locations');
       var jsonSearchPlaces = JSON.stringify(searchPlaces);
       var xhr = new XMLHttpRequest();
       xhr.open('POST','/yelp/search',true);
@@ -168,15 +170,11 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
           console.log('error: ' + err);
         }
       }
-
-
-
     }
     else {
       window.alert('Directions request failed due to ' + status);
     }
   });
-  directionsDisplay.setMap(map);
 }
 
 //Adds Yelp Results as a list and as markers on the map
@@ -212,6 +210,7 @@ function addResultsToPage(searchResults,origin,destination) {
       searchResultContentRow.appendChild(searchResultRight);
       nameEl[i] = document.createElement('a');
       nameEl[i].className = 'brightred resultName';
+      nameEl[i].href = "#detailsMapRow";
       var nameText = document.createTextNode(searchResults[i].name);
       nameEl[i].appendChild(nameText);
       searchResultLeft.appendChild(nameEl[i]);
@@ -232,17 +231,61 @@ function addResultsToPage(searchResults,origin,destination) {
       //Adds Waypoint to map
       nameEl[i].addEventListener('click',function() {
         waypoint[0] = {location: resultLatLng};
-        initMap();
+        loadDetails();
       },false);
       resultMarker[i].addListener('click',function() {
         waypoint[0] = {location: resultLatLng};
-        initMap();
+        loadDetails();
       },false);
     }());
   };
   map.fitBounds(bound);
 }
 
+function loadDetails() {
+  var detailsHolder = document.createElement('div');
+  searchResultsEl.appendChild(detailsHolder);
+  var detailsMapRow = document.createElement('div');
+  detailsMapRow.className = 'row';
+  detailsMapRow.id = 'detailsMapRow';
+  detailsHolder.appendChild(detailsMapRow);
+  var detailsMapEl = document.createElement('div');
+  detailsMapEl.className = 'col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8';
+  detailsMapEl.id = 'detailsMap';
+  detailsMapRow.appendChild(detailsMapEl);
+  changeView('details');
+  initDetailsMap();
+}
+
+//Generate Results Map
+function initDetailsMap() {
+  var detailsDirectionsService = new google.maps.DirectionsService;
+  var detailsDirectionsDisplay = new google.maps.DirectionsRenderer;
+  detailsMap = new google.maps.Map(document.getElementById('detailsMap'), {
+    zoom: 8,
+    center: {lat: 33.6694600, lng: -117.8231100}
+  });
+  detailsDirectionsDisplay.setMap(detailsMap);
+  routeDetails(detailsDirectionsService,detailsDirectionsDisplay);
+}
+
+function routeDetails(directionsService, directionsDisplay) {
+  var request = {
+    origin: originLatLng,
+    waypoints: waypoint,
+    destination: destinationLatLng,
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, function(response, status) {
+    if (status === google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+      var theRoute = response.routes[0].legs[0];
+    }
+    else {
+      window.alert('Directions request failed due to ' + status);
+    }
+  });
+}
 
 function AddRating(business) {
   ratingsEl = document.createElement('div');
@@ -273,7 +316,7 @@ function AddRating(business) {
   }
   else if (business.rating == 5) {
     rating = '5';
-  }
+  };
   ratingsEl.className = 'rating rating-' + rating;
   var star1 = document.createElement('i');
   var star2 = document.createElement('i');
@@ -305,4 +348,21 @@ function AddRating(business) {
 function searchRequested(e) {
   e.preventDefault();
   runSearch();
+}
+
+function changeView(page) {
+  if (page == 'details') {
+    searchResultsEl.removeChild(holderEl);
+    searchResultsEl.appendChild(detailsHolder);
+
+    //detailsHolder.style.display= 'visible';
+    //holderEl.style.display= 'hidden';
+  }
+  else if (page == 'results') {
+    searchResultsEl.appendChild(holderEl);
+    searchResultsEl.removeChild(detailsHolder);
+
+    //holderEl.style.display= 'visible';
+    //detailsHolder.style.display= 'hidden';
+  };
 }

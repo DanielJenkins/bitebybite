@@ -137,7 +137,13 @@ p {
 .subtitleXs {
   text-shadow: 2px 2px 4px #100b09;
 }
-/*------------------------Search Results------------------------*/
+/*------------------------Search Results and Details------------------------*/
+#detailsMap {
+  height: 100%;
+}
+#detailsMapRow {
+  height: 500px;
+}
 #resultMap {
   height: 100%;
 }
