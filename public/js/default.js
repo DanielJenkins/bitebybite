@@ -1,3 +1,4 @@
+var backBtnEl = document.getElementById('backBtnEl');
 var destinationElement = document.getElementById('destination');
 var detailsHolder = document.getElementById('detailsHolder');
 var holderEl = document.getElementById('holderEl');
@@ -32,6 +33,7 @@ var selection = [];
 var waypoint = [];
 
 search.addEventListener('click',searchRequested,false);
+backBtnEl.addEventListener('click',function() {changeView('results');},false);
 google.maps.event.addDomListener(window, 'load', init);
 
 function init() {
@@ -214,7 +216,7 @@ function addResultsToPage(searchResults,origin,destination) {
       searchResultContentRow.appendChild(searchResultRight);
       nameEl[i] = document.createElement('a');
       nameEl[i].className = 'brightred resultName';
-      nameEl[i].href = "#detailsMapRow";
+      nameEl[i].href = "#backBtnEl";
       var nameText = document.createTextNode(searchResults[i].name);
       nameEl[i].appendChild(nameText);
       searchResultLeft.appendChild(nameEl[i]);
@@ -253,6 +255,7 @@ function loadDetails() {
   while (detailsHolder.firstChild) {
     detailsHolder.removeChild(detailsHolder.firstChild);
   }
+
   var detailsMapRow = document.createElement('div');
   detailsMapRow.className = 'row';
   detailsMapRow.id = 'detailsMapRow';
@@ -281,7 +284,6 @@ function loadDetails() {
   console.log('URL: ' + selection.url);
   selectionUrlEl.href = selection.url;
   selectionUrlEl.target = '_blank';
-  selectionUrlEl.id = 'selectionUrl';
   var selectionUrl = document.createTextNode('View this Result on Yelp');
   selectionUrlEl.appendChild(selectionUrl);
   //SelectionAddress
@@ -420,18 +422,21 @@ function changeView(page) {
     console.log('Displaying Selection Details');
     loadingEl.style.display = 'none';
     holderEl.style.display = 'none';
+    backBtnEl.style.display = 'block';
     detailsHolder.style.display = 'block';
   }
   else if (page == 'results') {
     console.log('Displaying Results');
     loadingEl.style.display = 'none';
-    holderEl.style.display = 'inline';
+    holderEl.style.display = 'block';
+    backBtnEl.style.display = 'none';
     detailsHolder.style.display = 'none';
   }
   else if (page == 'loading') {
     console.log('Displaying Loading Screen');
     loadingEl.style.display = 'block';
     holderEl.style.display = 'none';
+    backBtnEl.style.display = 'none';
     detailsHolder.style.display = 'none';
   };
 }
