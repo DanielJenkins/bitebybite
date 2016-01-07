@@ -357,33 +357,37 @@ function routeDetails(directionsService, directionsDisplay) {
 function AddRating(business) {
   ratingsEl = document.createElement('div');
   var rating;
-  if(business.rating == 1) {
-    rating = '1';
+  switch(business.rating) {
+    case 1:
+      rating = '1';
+      break;
+    case 1.5:
+      rating = '1-half';
+      break;
+    case 2:
+      rating = '2';
+      break;
+    case 2.5:
+      rating = '2-half';
+      break;
+    case 3:
+      rating = '3';
+      break;
+    case 3.5:
+      rating = '3-half';
+      break;
+    case 4:
+      rating = '4';
+      break;
+    case 4.5:
+      rating = '4-half';
+      break;
+    case 5:
+      rating = '5';
+      break;
+    default:
+      rating = null;
   }
-  else if (business.rating == 1.5) {
-    rating = '1-half';
-  }
-  else if (business.rating == 2) {
-    rating = '2';
-  }
-  else if (business.rating == 2.5) {
-    rating = '2-half';
-  }
-  else if (business.rating == 3) {
-    rating = '3';
-  }
-  else if (business.rating == 3.5) {
-    rating = '3-half';
-  }
-  else if (business.rating == 4) {
-    rating = '4';
-  }
-  else if (business.rating == 4.5) {
-    rating = '4-half';
-  }
-  else if (business.rating == 5) {
-    rating = '5';
-  };
   ratingsEl.className = 'rating rating-' + rating;
   var star1 = document.createElement('i');
   var star2 = document.createElement('i');

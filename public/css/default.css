@@ -4,65 +4,26 @@ h1, h2, h3, h4, h5, h6, a {
 p {
   font-family: 'Roboto Slab', 'Bitter', serif;
 }
-.lightblueBackground {
-  background-color: #0076e9;
-}
-.mediumblueBackground {
-  background-color: #00264a;
-}
 .bluegreyBackground {
   background-color: #45586b;
 }
 .darkblueBackground {
   background-color: #031c34;
 }
-.blueblackBackground {
-  background-color: #100b09;
-}
-.greenBackground {
-  background-color: #003919;
-}
-.redgreyBackground {
-  background-color: #a47265;
-}
-.brightredBackground {
-  background-color: #ca2f16;
-}
 .darkredBackground {
   background-color: #501100;
 }
-.redblackBackground {
-  background-color: #100b09;
+.white {
+  color: #ffffff;
 }
 .lightblue {
-  color: #0076e9;
-}
-.mediumblue {
-  color: #00264a;
-}
-.bluegrey {
-  color: #45586b;
-}
-.darkblue {
-  color: #031c34;
-}
-.blueblack {
-  color: #100b09;
-}
-.green {
-  color: #003919;
+  color: #3788D6;
 }
 .redgrey {
   color: #a47265;
 }
 .brightred {
   color: #ca2f16;
-}
-.darkred {
-  color: #501100;
-}
-.redblack {
-  color: #100b09;
 }
 /*-----------------------------------------------------------*/
 /*Front Page*/
