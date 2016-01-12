@@ -22,6 +22,7 @@ search.addEventListener('click',searchRequested,false);
 backBtnEl.addEventListener('click',function() {changeView('results');},false);
 google.maps.event.addDomListener(window, 'load', init);
 
+//Initializes Google Places Autocomplete feature
 function init() {
   originAutocomplete = new google.maps.places.Autocomplete(originElement);
   destinationAutocomplete = new google.maps.places.Autocomplete(destinationElement);
@@ -37,6 +38,7 @@ function init() {
   }); 
 }
 
+//Runs when a search is requested
 function runSearch() {
   //Get origin and destination lat&lng
   searchTerm = JSON.stringify(searchTermEl.value);
@@ -93,57 +95,8 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
   }, function(response, status) {
     if (status === google.maps.DirectionsStatus.OK) {
       directionsDisplay.setDirections(response);
-      var navSteps = [];
       var searchPlaces = [];
-      var theRoute = response.routes[0].legs[0];
-      for (var s = 0; s < theRoute.steps.length; s++) {
-        navSteps[s] = (theRoute.steps[s].start_location);
-      }
-
-      //Get Yelp Search Locations
-
-      /*This segment may be used in place of the segment marked below
-      //-------------------Start Segment
-      //This block runs searches along a straight line between the origin and destination 
-      var numSearches = 4; //Starts at 0
-      var LatLngObj;
-      searchPlaces[0] = originLatLng;
-      for (var i = 0; i <= numSearches; i++) {
-        LatLngObj = google.maps.geometry.spherical.interpolate(originLatLng, destinationLatLng, (i/numSearches));
-        searchPlaces[i] = {searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng()};
-      };
-      //--------------End Segment
-      */
-
-      //-------------------Start Segment
-      //This block is used to run searches at steps along a navigation route and various midpoints between them.
-      var allNavSteps = [];
-      allNavSteps[0] = originLatLng;
-      for (var i = 0; i < navSteps.length; i++) {
-        allNavSteps.push(navSteps[i]);
-      };
-      allNavSteps.push(destinationLatLng);
-      searchPlaces = [];
-      for (var i = 0; i < allNavSteps.length; i++) {
-        if (searchPlaces.length==0) {
-          searchPlaces.push({searchTerm: searchTerm, lat: allNavSteps[i].lat(), lng: allNavSteps[i].lng(), source: 'steps'});
-        }
-        var previousSearch = new google.maps.LatLng(searchPlaces[searchPlaces.length-1].lat, searchPlaces[searchPlaces.length-1].lng);
-        if((google.maps.geometry.spherical.computeDistanceBetween(previousSearch,allNavSteps[i]))>4828.03) {
-          searchPlaces.push({searchTerm: searchTerm, lat: allNavSteps[i].lat(), lng: allNavSteps[i].lng(), source: i + 'steps'});
-        }
-        if(i < allNavSteps.length-1) {
-          var distance = google.maps.geometry.spherical.computeDistanceBetween(allNavSteps[i],allNavSteps[i+1]);
-          if (distance > 16093.4) {
-            var numSearches = (distance-(distance%4828.03))/4828.03;
-            for (var k = 0; k < numSearches; k++) {
-              var LatLngObj = google.maps.geometry.spherical.interpolate(allNavSteps[i], allNavSteps[i+1], (k/numSearches));
-              searchPlaces.push({searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng(), source: i + ' calculation'});
-            };
-          };
-        }
-      };
-      //--------------End Segment
+      getSearchPlaces(response,searchPlaces);
 
       //Send Request to Yelp
       var jsonSearchPlaces = JSON.stringify(searchPlaces);
@@ -171,6 +124,57 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
   });
 }
 
+//Determines which locations yelp searches will be run on
+function getSearchPlaces(response,searchPlaces) {
+  var navSteps = [];
+  var theRoute = response.routes[0].legs[0];
+  for (var s = 0; s < theRoute.steps.length; s++) {
+    navSteps[s] = (theRoute.steps[s].start_location);
+  }
+
+  /*This segment may be used in place of the segment marked below
+  //-------------------Start Segment
+  //This block runs searches along a straight line between the origin and destination 
+  var numSearches = 4; //Starts at 0
+  var LatLngObj;
+  searchPlaces[0] = originLatLng;
+  for (var i = 0; i <= numSearches; i++) {
+    LatLngObj = google.maps.geometry.spherical.interpolate(originLatLng, destinationLatLng, (i/numSearches));
+    searchPlaces[i] = {searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng()};
+  };
+  //--------------End Segment
+  */
+
+  //-------------------Start Segment
+  //This block runs searches at steps along a navigation route and various midpoints between them.
+  var allNavSteps = [];
+  allNavSteps[0] = originLatLng;
+  for (var i = 0; i < navSteps.length; i++) {
+    allNavSteps.push(navSteps[i]);
+  };
+  allNavSteps.push(destinationLatLng);
+  for (var i = 0; i < allNavSteps.length; i++) {
+    if (searchPlaces.length==0) {
+      searchPlaces.push({searchTerm: searchTerm, lat: allNavSteps[i].lat(), lng: allNavSteps[i].lng(), source: 'steps'});
+    }
+    var previousSearch = new google.maps.LatLng(searchPlaces[searchPlaces.length-1].lat, searchPlaces[searchPlaces.length-1].lng);
+    if((google.maps.geometry.spherical.computeDistanceBetween(previousSearch,allNavSteps[i]))>4828.03) {
+      searchPlaces.push({searchTerm: searchTerm, lat: allNavSteps[i].lat(), lng: allNavSteps[i].lng(), source: i + 'steps'});
+    }
+    if(i < allNavSteps.length-1) {
+      var distance = google.maps.geometry.spherical.computeDistanceBetween(allNavSteps[i],allNavSteps[i+1]);
+      if (distance > 16093.4) {
+        var numSearches = (distance-(distance%4828.03))/4828.03;
+        for (var k = 0; k < numSearches; k++) {
+          var LatLngObj = google.maps.geometry.spherical.interpolate(allNavSteps[i], allNavSteps[i+1], (k/numSearches));
+          searchPlaces.push({searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng(), source: i + ' calculation'});
+        };
+      };
+    }
+  };
+  //--------------End Segment
+};
+
 //Adds Yelp Results as a list and as markers on the map
 function addResultsToPage(searchResults,origin,destination) {
   var bound = new google.maps.LatLngBounds();
@@ -179,6 +183,7 @@ function addResultsToPage(searchResults,origin,destination) {
   var nameEl = [];
   for (var i = 0; i < searchResults.length; i++) {
     (function () {
+      //Adding Markers to Map
       var currentResult = searchResults[i];
       var resultLat = searchResults[i].location.coordinate.latitude;
       var resultLng = searchResults[i].location.coordinate.longitude;
@@ -190,6 +195,7 @@ function addResultsToPage(searchResults,origin,destination) {
       resultMarker[i].setMap(map);
       bound.extend(resultMarker[i].getPosition());
 
+      //Adding Results to List
       var searchResultRow = document.createElement('div');
       searchResultRow.className = 'row';
       holderEl.appendChild(searchResultRow);
@@ -247,7 +253,6 @@ function loadDetails(selection) {
   while (detailsHolder.firstChild) {
     detailsHolder.removeChild(detailsHolder.firstChild);
   }
-
   var detailsMapRow = document.createElement('div');
   detailsMapRow.className = 'row';
   detailsMapRow.id = 'detailsMapRow';
@@ -256,7 +261,8 @@ function loadDetails(selection) {
   detailsMapEl.className = 'col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8';
   detailsMapEl.id = 'detailsMap';
   detailsMapRow.appendChild(detailsMapEl);
-  //Generate Navigation Instructions
+
+  //Generate Selection Details
   var selctionRow = document.createElement('div');
   selctionRow.className = 'row';
   detailsHolder.appendChild(selctionRow);
@@ -289,7 +295,6 @@ function loadDetails(selection) {
     var selectionNewline = document.createTextNode(selectionAddress[k]);
     selectionAddressEl.appendChild(selectionNewline);
   };
-
   var selectionLeft = document.createElement('div');
   var selectionRight = document.createElement('div');
   selectionLeft.className = 'col-xs-offset-1 col-xs-11 col-sm-offset-0 col-sm-7 col-md-7';
@@ -301,7 +306,7 @@ function loadDetails(selection) {
   selectionLeft.appendChild(selectionUrlEl);
   selectionRight.appendChild(selectionAddressEl);
 
-
+  //Generate Navigation Instructions
   var instructionsRow = document.createElement('div');
   instructionsRow.className = 'row';
   detailsHolder.appendChild(instructionsRow);
