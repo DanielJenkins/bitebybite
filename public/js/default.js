@@ -7,29 +7,15 @@ var originElement = document.getElementById('origin');
 var search = document.getElementById('search');
 var searchResultsEl = document.getElementById('searchResults');
 var searchTermEl = document.getElementById('category');
-var bound;
 var destination;
 var destinationAutocomplete;
-var destinationLat;
-var destinationLng;
 var destinationLatLng;
 var detailsMap;
 var map;
 var origin;
 var originAutocomplete;
-var originLat;
-var originLng;
 var originLatLng;
 var searchTerm;
-var yelpResults;
-var addressEl = [];
-var allNavSteps = [];
-var nameEl = []
-var navSteps = [];
-var resultMarker = [];
-var searchPlaces = [];
-var searchResult = [];
-var selection = [];
 var waypoint = [];
 
 search.addEventListener('click',searchRequested,false);
@@ -55,12 +41,12 @@ function runSearch() {
   //Get origin and destination lat&lng
   searchTerm = JSON.stringify(searchTermEl.value);
   origin = originAutocomplete.getPlace();
-  originLat = origin.geometry.location.lat();
-  originLng = origin.geometry.location.lng();
+  var originLat = origin.geometry.location.lat();
+  var originLng = origin.geometry.location.lng();
   originLatLng = new google.maps.LatLng({lat: originLat, lng: originLng}); 
   destination = destinationAutocomplete.getPlace();
-  destinationLat = destination.geometry.location.lat();
-  destinationLng = destination.geometry.location.lng();
+  var destinationLat = destination.geometry.location.lat();
+  var destinationLng = destination.geometry.location.lng();
   destinationLatLng = new google.maps.LatLng({lat: destinationLat, lng: destinationLng});
   //Generate map and get step coordinates
   createMapEl();
@@ -94,11 +80,11 @@ function initMap() {
     center: {lat: 33.6694600, lng: -117.8231100}
   });
   directionsDisplay.setMap(map);
-  calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps);
+  calculateAndDisplayRoute(directionsService, directionsDisplay);
 }
 
 //Generate Directions and Get Step Coordinates
-function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps) {
+function calculateAndDisplayRoute(directionsService, directionsDisplay) {
   directionsService.route({
     origin: originLatLng,
     waypoints: waypoint,
@@ -107,7 +93,8 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
   }, function(response, status) {
     if (status === google.maps.DirectionsStatus.OK) {
       directionsDisplay.setDirections(response);
-      navSteps = [];
+      var navSteps = [];
+      var searchPlaces = [];
       var theRoute = response.routes[0].legs[0];
       for (var s = 0; s < theRoute.steps.length; s++) {
         navSteps[s] = (theRoute.steps[s].start_location);
@@ -115,8 +102,9 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
 
       //Get Yelp Search Locations
 
-      /*---------------
-      //This segment can be used to run searches along a straight line between the origin and destination
+      /*This segment may be used in place of the segment marked below
+      //-------------------Start Segment
+      //This block runs searches along a straight line between the origin and destination 
       var numSearches = 4; //Starts at 0
       var LatLngObj;
       searchPlaces[0] = originLatLng;
@@ -124,10 +112,12 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
         LatLngObj = google.maps.geometry.spherical.interpolate(originLatLng, destinationLatLng, (i/numSearches));
         searchPlaces[i] = {searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng()};
       };
-      ---------------*/
+      //--------------End Segment
+      */
 
-      //This segment can be used to run searches at steps along a navigation route and various midpoints between them.
-      allNavSteps = [];
+      //-------------------Start Segment
+      //This block is used to run searches at steps along a navigation route and various midpoints between them.
+      var allNavSteps = [];
       allNavSteps[0] = originLatLng;
       for (var i = 0; i < navSteps.length; i++) {
         allNavSteps.push(navSteps[i]);
@@ -148,15 +138,14 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
             var numSearches = (distance-(distance%4828.03))/4828.03;
             for (var k = 0; k < numSearches; k++) {
               var LatLngObj = google.maps.geometry.spherical.interpolate(allNavSteps[i], allNavSteps[i+1], (k/numSearches));
-              console.log(i + ' calculation: ' + LatLngObj);
               searchPlaces.push({searchTerm: searchTerm, lat: LatLngObj.lat(), lng: LatLngObj.lng(), source: i + ' calculation'});
             };
           };
         }
       };
+      //--------------End Segment
 
       //Send Request to Yelp
-      console.log('Searching yelp at ' + searchPlaces.length + ' locations');
       var jsonSearchPlaces = JSON.stringify(searchPlaces);
       var xhr = new XMLHttpRequest();
       xhr.open('POST','/yelp/search',true);
@@ -164,7 +153,7 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
       //Get Results from Yelp
       xhr.onload = function() {
         if (xhr.status == 200) {
-          yelpResults = JSON.parse(xhr.responseText);
+          var yelpResults = JSON.parse(xhr.responseText);
           changeView('results');
           google.maps.event.trigger(map, 'resize');
           addResultsToPage(yelpResults,origin,destination);
@@ -184,8 +173,10 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, navSteps
 
 //Adds Yelp Results as a list and as markers on the map
 function addResultsToPage(searchResults,origin,destination) {
-  bound = new google.maps.LatLngBounds();
-  resultMarker = [];
+  var bound = new google.maps.LatLngBounds();
+  var resultMarker = [];
+  var addressEl = [];
+  var nameEl = [];
   for (var i = 0; i < searchResults.length; i++) {
     (function () {
       var currentResult = searchResults[i];
@@ -235,22 +226,23 @@ function addResultsToPage(searchResults,origin,destination) {
       searchResultRight.appendChild(addressEl[i]);
 
       //Adds Waypoint to map
+      var mySelection = [];
       nameEl[i].addEventListener('click',function() {
         waypoint[0] = {location: resultLatLng};
-        selection = currentResult;
-        loadDetails();
+        mySelection = currentResult;
+        loadDetails(mySelection);
       },false);
       resultMarker[i].addListener('click',function() {
         waypoint[0] = {location: resultLatLng};
-        selection = currentResult;
-        loadDetails();
+        mySelection = currentResult;
+        loadDetails(mySelection);
       },false);
     }());
   };
   map.fitBounds(bound);
 }
 
-function loadDetails() {
+function loadDetails(selection) {
   //Generate Map with Waypoint
   while (detailsHolder.firstChild) {
     detailsHolder.removeChild(detailsHolder.firstChild);
@@ -281,14 +273,12 @@ function loadDetails() {
   var selectionRatingEl = new AddRating(selection);
   //URL
   var selectionUrlEl = document.createElement('a');
-  console.log('URL: ' + selection.url);
   selectionUrlEl.href = selection.url;
   selectionUrlEl.target = '_blank';
   var selectionUrl = document.createTextNode('View this Result on Yelp');
   selectionUrlEl.appendChild(selectionUrl);
   //SelectionAddress
   var selectionAddress = selection.location.display_address;
-  console.log('Selection Address: ' + selectionAddress);
   var selectionAddressEl = document.createElement('p');
   selectionAddressEl.className = 'addressText redgrey';
   for (var k = 0; k < selectionAddress.length; k++) {
@@ -423,21 +413,18 @@ function searchRequested(e) {
 
 function changeView(page) {
   if (page == 'details') {
-    console.log('Displaying Selection Details');
     loadingEl.style.display = 'none';
     holderEl.style.display = 'none';
     backBtnEl.style.display = 'block';
     detailsHolder.style.display = 'block';
   }
   else if (page == 'results') {
-    console.log('Displaying Results');
     loadingEl.style.display = 'none';
     holderEl.style.display = 'block';
     backBtnEl.style.display = 'none';
     detailsHolder.style.display = 'none';
   }
   else if (page == 'loading') {
-    console.log('Displaying Loading Screen');
     loadingEl.style.display = 'block';
     holderEl.style.display = 'none';
     backBtnEl.style.display = 'none';

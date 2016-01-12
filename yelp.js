@@ -35,8 +35,6 @@ yelpRouter.post('/search', function(req,res){
         businesses = businesses.slice(0, 5);
       }
       searchResults[m] = businesses;
-      console.log('Yelp results returned for ' + m + 'th search');
-
       responses++;
       //Runs once all search results have been received from yelp
       if(responses===responseBody.length) {
@@ -59,7 +57,6 @@ yelpRouter.post('/search', function(req,res){
             };
           };
         };
-        console.log('Exporting yelp search results to default.js');
         JSON.stringify(uniqueResults);
         res.send(uniqueResults);
       }
