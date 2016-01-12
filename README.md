@@ -6,11 +6,13 @@
 - Node
 - Express
 - Jade
+- Bootstrap
+- jQuery (for Bootstrap only)
 - Google Maps JavaScript API
 - Google Places API (JavaScript Library)
 - Node-Yelp API
 
-### To Run an Instance of this app, you need:
+### To run an Instance of this app, you need:
 
 **1. Google Maps API Key**
 - `index.jade` (or `index.html` if you are skipping jade conversion) holds your Google Maps API Key.
