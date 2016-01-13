@@ -55,4 +55,4 @@ var client = yelp.createClient({ /n
 - View your results
 - View a selection as a waypoint in your route by clicking on the result title or marker
 
-![bitebybite Search Results](https://github.com/DanielJenkins/bitebybite/blob/master/mockups/screenshot.png)
+![bitebybite Search Results](https://github.com/DanielJenkins/bitebybite/blob/master/mockups-and-screenshots/screenshot.png)
