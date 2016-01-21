@@ -17,13 +17,16 @@ p {
   color: #ffffff;
 }
 .lightblue {
-  color: #3788D6;
+  color: #ffffff;
+  /*color: #3788D6;*/
 }
 .redgrey {
-  color: #a47265;
+  color: #C69A8E;
+  /*color: #a47265;*/
 }
 .brightred {
-  color: #ca2f16;
+  color: #f1d1c8;
+  /*color: #ca2f16;*/
 }
 /*-----------------------------------------------------------*/
 /*Front Page*/

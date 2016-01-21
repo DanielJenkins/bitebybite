@@ -6,10 +6,10 @@ yelpRouter.use(parser.text());
 
 var client = yelp.createClient({
   oauth: {
-    "consumer_key": "AP6CYcgjBZCKzR7mDQFLrQ",
-    "consumer_secret": "xw0F4fOitGKou8B7I0Gpt0QrxqI",
-    "token": "DCF4uG8gxdBMAfOMw4mWTZHWciMQcph7",
-    "token_secret": "czysvKMSpgOoVFidLy3eRf-uDl0"
+    "consumer_key": "YOUR-CONSUMER_KEY-HERE",
+    "consumer_secret": "YOUR-CONSUMER_SECRET-HERE",
+    "token": "YOUR-TOKEN-HERE",
+    "token_secret": "YOUR-TOKEN_SECRET-HERE"
   },
   httpClient: {
     maxSockets: 25  // ~> Default is 10 

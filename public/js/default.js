@@ -79,6 +79,7 @@ function initMap() {
   var directionsDisplay = new google.maps.DirectionsRenderer;
   map = new google.maps.Map(document.getElementById('resultMap'), {
     zoom: 8,
+    scrollwheel: false,
     center: {lat: 33.6694600, lng: -117.8231100}
   });
   directionsDisplay.setMap(map);
@@ -324,6 +325,7 @@ function initDetailsMap() {
   var detailsDirectionsDisplay = new google.maps.DirectionsRenderer;
   detailsMap = new google.maps.Map(document.getElementById('detailsMap'), {
     zoom: 8,
+    scrollwheel: false,
     center: {lat: 33.6694600, lng: -117.8231100}
   });
   detailsDirectionsDisplay.setMap(detailsMap);
