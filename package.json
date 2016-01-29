@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/DanielJenkins/bitebybite/issues"
   },
-  "homepage": "https://github.com/DanielJenkins/bitebybite#readme"
+  "homepage": "https://github.com/DanielJenkins/bitebybite#readme",
+  "engines": {
+    "node": "5.1.1"
+  }
 }
