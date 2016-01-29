@@ -3,7 +3,7 @@ var app = express();
 var path = require('path');
 var yelpRouter = require('./yelp.js');
 
-app.use(express.static('public'));
+app.use(express.static('application/public'));
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname+'/index.html'));
@@ -11,5 +11,6 @@ app.get('/', function(req, res) {
 
 app.use('/yelp',yelpRouter);
 
-app.listen(1337);
+var port = process.env.PORT || 3000;
+app.listen(port);
 console.log('Server is running');
