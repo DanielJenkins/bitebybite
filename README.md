@@ -1,8 +1,8 @@
 # bitebybite
 
-## It's a search tool for people who want to stop for food along a specified route
+It's a search tool for people who want to stop for food along a specified route
 
-**Built Upon the Following Technologies:**
+## Built Upon the Following Technologies:
 - Node
 - Express
 - Jade
@@ -12,7 +12,15 @@
 - Google Places API (JavaScript Library)
 - Node-Yelp API
 
-### To run an Instance of this app, you need:
+## Notable features:
+- A user can select an origin and destination, using autocomplete from the Google Places API (JavaScript Library). A field is also provided to choose a Yelp search term.
+- A user can see a map with a suggested route from their selected origin to their selected destination.
+- A user can see a list of Yelp results near the route described above. This list is also populated as markers on the map described above. (Results courtesy of the Node-Yelp API)
+- Hovering over a marker displays the Yelp result name and it's Yelp rating.
+- A user can click on a marker or result in the list to view a result in more detail.
+- When viewing a result in detail, a map is generated showing that result set as a waypoint in the route between the origin and destination. In addition, step-by-step directions are provided via the Google Maps JavaScript API. There is also an external link to the result's Yelp page.
+
+## To run an Instance of this app, you need:
 
 **1. Google Maps API Key**
 - `index.jade` (or `index.html` if you are skipping jade conversion) holds your Google Maps API Key.
@@ -56,3 +64,5 @@ var client = yelp.createClient({ /n
 - View a selection as a waypoint in your route by clicking on the result title or marker
 
 ![bitebybite Search Results](https://github.com/DanielJenkins/bitebybite/blob/master/mockups-and-screenshots/screenshot.png)
+
+![bitebybite Result Selection with Directions](https://github.com/DanielJenkins/bitebybite/blob/master/mockups-and-screenshots/selection-map-screenshot.png)
