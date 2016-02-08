@@ -2,6 +2,8 @@
 
 It's a search tool for people who want to stop for food along a specified route
 
+**An instance of this application can be viewed at: [https://bitebybite.herokuapp.com/](https://bitebybite.herokuapp.com/)**
+
 ## Built Upon the Following Technologies:
 - Node
 - Express
@@ -63,6 +65,6 @@ var client = yelp.createClient({ /n
 - View your results
 - View a selection as a waypoint in your route by clicking on the result title or marker
 
-![bitebybite Search Results](https://github.com/DanielJenkins/bitebybite/blob/master/mockups-and-screenshots/screenshot.png)
-
 ![bitebybite Result Selection with Directions](https://github.com/DanielJenkins/bitebybite/blob/master/mockups-and-screenshots/selection-map-screenshot.png)
+
+![bitebybite Search Results](https://github.com/DanielJenkins/bitebybite/blob/master/mockups-and-screenshots/screenshot.png)
