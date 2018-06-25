@@ -26,16 +26,16 @@ google.maps.event.addDomListener(window, 'load', init);
 function init() {
   originAutocomplete = new google.maps.places.Autocomplete(originElement);
   destinationAutocomplete = new google.maps.places.Autocomplete(destinationElement);
-  google.maps.event.addDomListener(originElement, 'keydown', function(e) { 
-    if (e.keyCode == 13) { 
-      e.preventDefault(); 
+  google.maps.event.addDomListener(originElement, 'keydown', function(e) {
+    if (e.keyCode == 13) {
+      e.preventDefault();
     }
-  }); 
-  google.maps.event.addDomListener(destinationElement, 'keydown', function(e) { 
-    if (e.keyCode == 13) { 
-      e.preventDefault(); 
+  });
+  google.maps.event.addDomListener(destinationElement, 'keydown', function(e) {
+    if (e.keyCode == 13) {
+      e.preventDefault();
     }
-  }); 
+  });
 }
 
 //Runs when a search is requested
@@ -45,7 +45,7 @@ function runSearch() {
   origin = originAutocomplete.getPlace();
   var originLat = origin.geometry.location.lat();
   var originLng = origin.geometry.location.lng();
-  originLatLng = new google.maps.LatLng({lat: originLat, lng: originLng}); 
+  originLatLng = new google.maps.LatLng({lat: originLat, lng: originLng});
   destination = destinationAutocomplete.getPlace();
   var destinationLat = destination.geometry.location.lat();
   var destinationLng = destination.geometry.location.lng();
@@ -135,7 +135,7 @@ function getSearchPlaces(response,searchPlaces) {
 
   /*This segment may be used in place of the segment marked below
   //-------------------Start Segment
-  //This block runs searches along a straight line between the origin and destination 
+  //This block runs searches along a straight line between the origin and destination
   var numSearches = 4; //Starts at 0
   var LatLngObj;
   searchPlaces[0] = originLatLng;
@@ -186,8 +186,8 @@ function addResultsToPage(searchResults,origin,destination) {
     (function () {
       //Adding Markers to Map
       var currentResult = searchResults[i];
-      var resultLat = searchResults[i].location.coordinate.latitude;
-      var resultLng = searchResults[i].location.coordinate.longitude;
+      var resultLat = searchResults[i].coordinates.latitude;
+      var resultLng = searchResults[i].coordinates.longitude;
       var resultLatLng = {lat: resultLat, lng: resultLng};
       resultMarker[i] = new google.maps.Marker({
         position: resultLatLng,

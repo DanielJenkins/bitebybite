@@ -34,21 +34,11 @@ script(type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=Y
 ```
 
 **2. Yelp API Key**
-- `yelp.js` holds your Yelp API Keys.
+- `yelp.js` holds your Yelp API Key.
 - You can get Yelp API Keys at:
-  [https://www.yelp.com/login?return_url=/developers/manage_api_keys](https://www.yelp.com/login?return_url=/developers/manage_api_keys)
+  [https://www.yelp.com/developers/v3/manage_app](https://www.yelp.com/developers/v3/manage_app)
 ```
-var client = yelp.createClient({ /n
-  oauth: {
-    "consumer_key": "YOUR-CONSUMER_KEY-HERE",
-    "consumer_secret": "YOUR-CONSUMER_SECRET-HERE",
-    "token": "YOUR-TOKEN-HERE",
-    "token_secret": "YOUR-TOKEN_SECRET-HERE"
-  },
-  httpClient: {
-    maxSockets: 25  // ~> Default is 10 
-  }
-});
+var apiKey = "YOUR_API_KEY_HERE";
 ```
 
 **3. Install Dependencies**
